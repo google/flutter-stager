@@ -1,5 +1,7 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:stager/src/scene.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:stager/stager.dart';
 
 import '../shared/api.dart';
 import '../shared/post.dart';
@@ -10,6 +12,14 @@ class FakeApi implements Api {
 
   @override
   Future<List<Post>> fetchPosts() async => posts;
+}
+
+class LoadingApi implements Api {
+  @override
+  Future<List<Post>> fetchPosts() {
+    final completer = Completer<List<Post>>();
+    return completer.future;
+  }
 }
 
 abstract class BasePostsListScene extends Scene {
@@ -37,4 +47,16 @@ class WithPostsScene extends BasePostsListScene {
   Future<void> setUp() async {
     fakeApi.posts = Post.fakePosts;
   }
+}
+
+class LoadingScene extends Scene {
+  final api = LoadingApi();
+
+  @override
+  Widget build() {
+    return PostsList(api: api);
+  }
+
+  @override
+  String get title => 'Loading';
 }
