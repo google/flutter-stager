@@ -8,6 +8,8 @@ class StagerAppGenerator extends Generator {
     LibraryReader library,
     BuildStep buildStep,
   ) async {
+    // We only want to display scenes with titles. We assume [Scene] subclasses
+    // without titles are base classes.
     final sceneElements = library.allElements
         .whereType<ClassElement>()
         .where(
@@ -26,20 +28,17 @@ class StagerAppGenerator extends Generator {
 
     final buffer = StringBuffer();
 
-    final imports = sceneElements
+    final importsString = sceneElements
         .map((e) => e.source.shortName)
         .toSet()
-        .map((shortName) => "import '$shortName';");
-    buffer.write(imports.join('\n'));
+        .map((shortName) => "import '$shortName';")
+        .join('\n');
 
-    final sceneConstructors = [];
+    final sceneConstructorsString =
+        sceneElements.map((e) => '${e.name}()').join('\n');
 
-    for (final sceneElement in sceneElements) {
-      sceneConstructors.add('${sceneElement.name}()');
-    }
-
-    final sceneConstructorsString = sceneConstructors.join(',\n');
     buffer.write('''
+$importsString
 
 import 'package:flutter/material.dart';
 import 'package:stager/stager.dart';
