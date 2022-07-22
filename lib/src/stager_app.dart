@@ -3,10 +3,10 @@ import 'package:stager/stager.dart';
 
 import 'scene_widget.dart';
 
-class SceneListApp extends StatelessWidget {
+class StagerApp extends StatelessWidget {
   final List<Scene> scenes;
 
-  const SceneListApp({super.key, required this.scenes});
+  const StagerApp({super.key, required this.scenes});
 
   @override
   Widget build(BuildContext context) {

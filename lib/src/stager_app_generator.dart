@@ -35,7 +35,7 @@ class StagerAppGenerator extends Generator {
         .join('\n');
 
     final sceneConstructorsString =
-        sceneElements.map((e) => '${e.name}()').join('\n');
+        sceneElements.map((e) => '${e.name}(),').join('\n');
 
     buffer.write('''
 $importsString
@@ -52,7 +52,7 @@ Future<void> main() async {
     await scene.setUp();
   }
 
-  runApp(SceneListApp(scenes: scenes));
+  runApp(StagerApp(scenes: scenes));
 }
 ''');
 
