@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stager/stager.dart';
 
-import 'scene_widget.dart';
-
 class StagerApp extends StatelessWidget {
   final List<Scene> scenes;
 
@@ -19,7 +17,7 @@ class StagerApp extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => SceneWidget(scene: scenes[index]),
+                  builder: (_) => scenes[index].build(),
                 ),
               );
             },
