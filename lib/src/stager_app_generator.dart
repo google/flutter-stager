@@ -48,11 +48,18 @@ Future<void> main() async {
     $sceneConstructorsString
   ];
 
-  for (final scene in scenes) {
+  if (const String.fromEnvironment('Scene').isNotEmpty) {
+    const sceneName = String.fromEnvironment('Scene');
+    final scene = scenes.firstWhere((scene) => scene.title == sceneName);
     await scene.setUp();
-  }
+    runApp(scene.build());
+  } else {
+    for (final scene in scenes) {
+      await scene.setUp();
+    }
 
-  runApp(StagerApp(scenes: scenes));
+    runApp(StagerApp(scenes: scenes));
+  }
 }
 ''');
 
