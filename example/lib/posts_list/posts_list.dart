@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
 
 import '../shared/api.dart';
 import '../shared/post.dart';
 
 class PostsList extends StatefulWidget {
-  final Api api;
-
-  const PostsList({super.key, required this.api});
+  const PostsList({super.key});
 
   @override
   State<PostsList> createState() => _PostsListState();
@@ -20,7 +17,7 @@ class _PostsListState extends State<PostsList> {
   @override
   void initState() {
     super.initState();
-    _fetchPostsFuture = widget.api.fetchPosts();
+    _fetchPostsFuture = Provider.of<Api>(context, listen: false).fetchPosts();
   }
 
   @override

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'posts_list/posts_list.dart';
 import 'shared/api.dart';
-
-final api = Api();
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PostsList(api: api),
+      home: Provider.value(
+        value: Api(),
+        child: const PostsList(),
+      ),
     );
   }
 }

@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mockito: ^5.2.0
+  provider: ^6.0.3
   stager:
 
 dev_dependencies:

@@ -1,42 +1,46 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:stager/stager.dart';
 
 import '../shared/api.dart';
 import '../shared/post.dart';
 import 'posts_list.dart';
 
-class FakeApi implements Api {
-  List<Post> posts = [];
+import 'posts_list_scenes.mocks.dart';
 
-  @override
-  Future<List<Post>> fetchPosts() async => posts;
-}
-
-class LoadingApi implements Api {
-  @override
-  Future<List<Post>> fetchPosts() {
-    final completer = Completer<List<Post>>();
-    return completer.future;
-  }
-}
-
+@GenerateMocks([Api])
 abstract class BasePostsListScene extends Scene {
-  final fakeApi = FakeApi();
+  late MockApi mockApi;
 
   @override
   Widget build() {
-    return PostsList(api: fakeApi);
+    return MaterialApp(
+      home: Provider<Api>.value(
+        value: mockApi,
+        child: const PostsList(),
+      ),
+    );
   }
 
   @override
-  Future<void> setUp() async {}
+  Future<void> setUp() async {
+    mockApi = MockApi();
+  }
 }
 
 class EmptyListScene extends BasePostsListScene {
   @override
   String get title => 'Empty List';
+
+  @override
+  Future<void> setUp() async {
+    await super.setUp();
+    when(mockApi.fetchPosts()).thenAnswer((_) async => []);
+  }
 }
 
 class WithPostsScene extends BasePostsListScene {
@@ -45,18 +49,30 @@ class WithPostsScene extends BasePostsListScene {
 
   @override
   Future<void> setUp() async {
-    fakeApi.posts = Post.fakePosts;
+    await super.setUp();
+    when(mockApi.fetchPosts()).thenAnswer((_) async => Post.fakePosts);
   }
 }
 
-class LoadingScene extends Scene {
-  final api = LoadingApi();
-
-  @override
-  Widget build() {
-    return PostsList(api: api);
-  }
-
+class LoadingScene extends BasePostsListScene {
   @override
   String get title => 'Loading';
+
+  @override
+  Future<void> setUp() async {
+    await super.setUp();
+    final completer = Completer<List<Post>>();
+    when(mockApi.fetchPosts()).thenAnswer((_) async => completer.future);
+  }
+}
+
+class ErrorScene extends BasePostsListScene {
+  @override
+  String get title => 'Error';
+
+  @override
+  Future<void> setUp() async {
+    await super.setUp();
+    when(mockApi.fetchPosts()).thenAnswer((_) => Future.error(Exception()));
+  }
 }

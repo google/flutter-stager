@@ -14,6 +14,7 @@ Future<void> main() async {
     EmptyListScene(),
     WithPostsScene(),
     LoadingScene(),
+    ErrorScene(),
   ];
 
   for (final scene in scenes) {
