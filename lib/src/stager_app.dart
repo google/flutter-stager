@@ -77,16 +77,20 @@ class _SceneListState extends State<SceneList> with RouteAware {
     return Scaffold(
       appBar: AppBar(title: const Text('Scenes')),
       body: ListView.separated(
-        itemBuilder: (context, index) => ListTile(
-          title: Text(widget.scenes[index].title),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => widget.scenes[index].build(),
-              ),
-            );
-          },
-        ),
+        itemBuilder: (context, index) {
+          final scene = widget.scenes[index];
+          return ListTile(
+            title: Text(widget.scenes[index].title),
+            onTap: () async {
+              await scene.setUp();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => scene.build(),
+                ),
+              );
+            },
+          );
+        },
         separatorBuilder: (_, __) => const Divider(),
         itemCount: widget.scenes.length,
       ),

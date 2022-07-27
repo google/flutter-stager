@@ -23,10 +23,6 @@ Future<void> main() async {
     await scene.setUp();
     runApp(scene.build());
   } else {
-    for (final scene in scenes) {
-      await scene.setUp();
-    }
-
     runApp(StagerApp(scenes: scenes));
   }
 }
