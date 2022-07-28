@@ -9,6 +9,11 @@ Stager can accelerate your development workflow for widgets that:
 - Are hidden behind a feature flag.
 - Behave differently based on external state (e.g., the type of currently logged-in user).
 
+A Stager app for a ListView displaying forum-style posts:
+
+![example app demo](https://user-images.githubusercontent.com/581764/181614468-cbb89cbe-d16a-44bf-831e-47139ce3a7c0.gif)
+
+
 ## Concepts
 
 ### Scene
