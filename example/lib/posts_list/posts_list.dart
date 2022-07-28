@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../post_card/post_card.dart';
 import '../shared/api.dart';
 import '../shared/post.dart';
 
@@ -48,11 +49,10 @@ class _PostsListState extends State<PostsList> {
             );
           }
 
-          return ListView.separated(
-            itemBuilder: (context, index) => ListTile(
-              title: Text(posts[index].text),
+          return ListView.builder(
+            itemBuilder: (context, index) => PostCard(
+              post: posts[index],
             ),
-            separatorBuilder: (_, __) => const Divider(),
             itemCount: posts.length,
           );
         },
