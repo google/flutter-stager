@@ -44,21 +44,15 @@ class PostsListScene extends Scene {
 
   @override
   Widget build() {
-    return Builder(
-      builder: (context) => MaterialApp(
-        useInheritedMediaQuery: true,
-        theme: ThemeData.light().copyWith(platform: Theme.of(context).platform),
-        darkTheme:
-            ThemeData.dark().copyWith(platform: Theme.of(context).platform),
-        home: Builder(
-          builder: (context) => Container(
-            color: Theme.of(context).backgroundColor,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) => PostCard(
-                post: posts[index],
-              ),
+    return EnvironmentAwareApp(
+      home: Builder(
+        builder: (context) => Container(
+          color: Theme.of(context).backgroundColor,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) => PostCard(
+              post: posts[index],
             ),
           ),
         ),
