@@ -6,11 +6,6 @@ import '../shared/post.dart';
 
 class PostCardScene extends Scene {
   @override
-  final bool avoidSafeArea;
-
-  PostCardScene({this.avoidSafeArea = false});
-
-  @override
   String get title => 'Single Card';
 
   @override
@@ -49,14 +44,22 @@ class PostsListScene extends Scene {
 
   @override
   Widget build() {
-    return MaterialApp(
-      home: Container(
-        color: Colors.grey,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) => PostCard(
-            post: posts[index],
+    return Builder(
+      builder: (context) => MaterialApp(
+        useInheritedMediaQuery: true,
+        theme: ThemeData.light().copyWith(platform: Theme.of(context).platform),
+        darkTheme:
+            ThemeData.dark().copyWith(platform: Theme.of(context).platform),
+        home: Builder(
+          builder: (context) => Container(
+            color: Theme.of(context).backgroundColor,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) => PostCard(
+                post: posts[index],
+              ),
+            ),
           ),
         ),
       ),
