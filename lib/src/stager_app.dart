@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'scene.dart';
 import 'scene_container.dart';
 
+/// A simple app that displays a list of [Scene]s and navigates to them on tap.
 class StagerApp extends StatelessWidget {
   final List<Scene> scenes;
 

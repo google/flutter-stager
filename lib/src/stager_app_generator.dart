@@ -2,6 +2,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Generates a dart file containing a main function that launches a [StagerApp]
+/// which lists all titled [Scene] subclasses.
 class StagerAppGenerator extends Generator {
   @override
   Future<String?> generate(

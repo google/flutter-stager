@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+/// Detects long press gestures with a configurable [numberOfTouches].
 class MultiTouchLongPressGestureDetector extends StatefulWidget {
   /// How long the user must hold down before the gesture is detected.
   ///
@@ -22,7 +23,11 @@ class MultiTouchLongPressGestureDetector extends StatefulWidget {
     required this.numberOfTouches,
     required this.onGestureDetected,
     required this.child,
-  });
+  }) : assert(
+            numberOfTouches > 1,
+            'numberOfTouches must be greater than 1. Use '
+            'LongPressGestureRecognizer to recognize a single-touch long '
+            'press.');
 
   @override
   State<MultiTouchLongPressGestureDetector> createState() =>
@@ -45,12 +50,10 @@ class _MultiTouchLongPressGestureDetectorState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // scaling callbacks are used as a way to retrieve the number of fingers
-      // a user is tapping with
+      // Scaling callbacks are used as a way to retrieve the number of fingers
+      // the user is using.
       onScaleStart: (details) {
         if (details.pointerCount != widget.numberOfTouches) {
-          print('pointer count ${details.pointerCount} does not match required '
-              'number of touches ${widget.numberOfTouches}');
           return;
         }
 
