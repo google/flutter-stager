@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stager/src/environment_manipulation_panel.dart';
 
-import 'multifinger_long_press_gesture.dart';
+import 'multifinger_long_press_gesture_detector.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
 /// brightness) are editable using an on-screen widget.
