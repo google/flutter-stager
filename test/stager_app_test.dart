@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stager/src/scene_container.dart';
 import 'package:stager/stager.dart';
 
 void main() {
@@ -24,13 +25,13 @@ void main() {
     await tester.tap(find.text('Text'));
     await tester.pumpAndSettle();
 
-    // Verify that our FAB is present.
-    expect(find.byType(FloatingActionButton), findsOneWidget);
+    // Verify that our SceneContainer is present.
+    expect(find.byType(SceneContainer), findsOneWidget);
 
-    // Verify that tapping the FAB navigates back and hides the FAB.
-    await tester.tap(find.byType(FloatingActionButton));
+    // Verify that tapping the back button navigates back.
+    await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.byType(FloatingActionButton), findsNothing);
+    expect(find.byType(SceneContainer), findsNothing);
     expect(find.text('Text'), findsOneWidget);
     expect(find.text('Button'), findsOneWidget);
   });
