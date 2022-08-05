@@ -41,10 +41,12 @@ class _EnvironmentManipulationPanelState
           children: [
             Row(
               children: [
-                IconButton(
-                  onPressed: Navigator.of(context, rootNavigator: true).pop,
-                  icon: Icon(Icons.arrow_back),
-                ),
+                if (Navigator.of(context).canPop())
+                  IconButton(
+                    onPressed: () =>
+                        Navigator.of(context, rootNavigator: true).pop(),
+                    icon: Icon(Icons.arrow_back),
+                  ),
                 IconButton(
                   onPressed: widget.toggleDarkMode,
                   icon: Icon(Icons.light_mode),

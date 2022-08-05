@@ -4,6 +4,9 @@ import 'scene.dart';
 import 'scene_container.dart';
 
 /// A simple app that displays a list of [Scene]s and navigates to them on tap.
+///
+/// If only one Scene is provided, that Scene will be shown as though it had
+/// been navigated to from a list of Scenes.
 class StagerApp extends StatelessWidget {
   final List<Scene> scenes;
 
@@ -31,6 +34,12 @@ class SceneList extends StatefulWidget {
 class _SceneListState extends State<SceneList> {
   @override
   Widget build(BuildContext context) {
+    if (widget.scenes.length == 1) {
+      return SceneContainer(
+        child: widget.scenes.first.build(),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Scenes')),
       body: ListView.separated(

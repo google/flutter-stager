@@ -21,7 +21,7 @@ Future<void> main() async {
     const sceneName = String.fromEnvironment('Scene');
     final scene = scenes.firstWhere((scene) => scene.title == sceneName);
     await scene.setUp();
-    runApp(scene.build());
+    runApp(StagerApp(scenes: [scene]));
   } else {
     runApp(StagerApp(scenes: scenes));
   }

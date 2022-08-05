@@ -13,7 +13,6 @@ A Stager app for a ListView displaying forum-style posts:
 
 ![example app demo](https://user-images.githubusercontent.com/581764/181614468-cbb89cbe-d16a-44bf-831e-47139ce3a7c0.gif)
 
-
 ## Concepts
 
 ### Scene
@@ -161,7 +160,7 @@ Future<void> main() async {
     const sceneName = String.fromEnvironment('Scene');
     final scene = scenes.firstWhere((scene) => scene.title == sceneName);
     await scene.setUp();
-    runApp(scene.build());
+    runApp(StagerApp(scenes: [scene]));
   } else {
     runApp(StagerApp(scenes: scenes));
   }
