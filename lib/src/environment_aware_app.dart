@@ -10,8 +10,13 @@ import 'package:flutter/material.dart';
 /// manipulation feature to work properly.
 class EnvironmentAwareApp extends StatelessWidget {
   final Widget home;
+  final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
 
-  const EnvironmentAwareApp({super.key, required this.home});
+  const EnvironmentAwareApp({
+    super.key,
+    required this.home,
+    this.localizationsDelegates,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +26,7 @@ class EnvironmentAwareApp extends StatelessWidget {
       darkTheme:
           ThemeData.dark().copyWith(platform: Theme.of(context).platform),
       home: home,
+      localizationsDelegates: localizationsDelegates,
     );
   }
 }
