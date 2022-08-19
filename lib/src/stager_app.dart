@@ -2,66 +2,57 @@ import 'package:flutter/material.dart';
 
 import 'scene.dart';
 import 'scene_container.dart';
+import 'scene_list.dart';
+
+/// A convenience method to run [scenes] in a [StagerApp].
+void runStagerApp({required List<Scene> scenes}) =>
+    runApp(StagerApp(scenes: scenes));
 
 /// A simple app that displays a list of [Scene]s and navigates to them on tap.
 ///
 /// If only one Scene is provided, that Scene will be shown as though it had
 /// been navigated to from a list of Scenes.
-class StagerApp extends StatelessWidget {
+class StagerApp extends StatefulWidget {
   final List<Scene> scenes;
 
-  const StagerApp({super.key, required this.scenes});
+  StagerApp({super.key, required this.scenes});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SceneList(
-        scenes: scenes,
-      ),
-    );
-  }
+  State<StagerApp> createState() => _StagerAppState();
 }
 
-class SceneList extends StatefulWidget {
-  final List<Scene> scenes;
+class _StagerAppState extends State<StagerApp> {
+  late Future<void> _sceneSetUpFuture;
 
-  SceneList({super.key, required this.scenes});
+  bool get _isSingleScene => widget.scenes.length == 1;
 
   @override
-  State<SceneList> createState() => _SceneListState();
-}
-
-class _SceneListState extends State<SceneList> {
-  @override
-  Widget build(BuildContext context) {
-    if (widget.scenes.length == 1) {
-      return SceneContainer(
-        child: widget.scenes.first.build(),
-      );
+  void initState() {
+    super.initState();
+    if (_isSingleScene) {
+      _sceneSetUpFuture = widget.scenes.first.setUp();
+    } else {
+      _sceneSetUpFuture = Future.value();
     }
+  }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Scenes')),
-      body: ListView.separated(
-        itemBuilder: (context, index) {
-          final scene = widget.scenes[index];
-          return ListTile(
-            title: Text(widget.scenes[index].title),
-            onTap: () async {
-              await scene.setUp();
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => SceneContainer(
-                    child: scene.build(),
-                  ),
-                ),
-              );
-            },
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _sceneSetUpFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        },
-        separatorBuilder: (_, __) => const Divider(),
-        itemCount: widget.scenes.length,
-      ),
+        }
+
+        return MaterialApp(
+          home: _isSingleScene
+              ? SceneContainer(child: widget.scenes.first.build())
+              : SceneList(scenes: widget.scenes),
+        );
+      },
     );
   }
 }
