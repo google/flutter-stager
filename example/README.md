@@ -1,16 +1,22 @@
-# example
+# Stager Example
 
-A new Flutter project.
+A barebones sample app demonstrating how and why you might want to use Scenes.
 
-## Getting Started
+## Overview
 
-This project is a starting point for a Flutter application.
+This app shows a Twitter-like UI. It launches to a list of posts, from which you can
+navigate to a post detail page. From the post detail page, you can navigate to a user detail page,
+which shows the user's name and their posts.
 
-A few resources to get you started if this is your first Flutter project:
+To demonstrate how this works with DI and testing, this also uses [package:provider](https://pub.dev/packages/provider)
+and [package:mockito](https://pub.dev/packages/mockito). These only serve to illustrate one way you might
+use Stager and are not a requirement.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The app has three pages, each of which have their own scenes. These scenes exercise several different states
+for each page, some of which might be a bit diffcult or cumbersome to develop otherwise. For example, developing
+a loading screen without Stager might require:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. A one-off edit to the page code to permanently show a loading state. This would almost certainly never be
+committed to source control, and any future developers who want to test this would need to duplicate the work.
+2. Using Network Link Conditioner or a similar tool to simulate a bad network connection. This is better than
+option 1, but will not be useful when attempting to simulate other states (e.g., empty).

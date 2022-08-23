@@ -4,7 +4,7 @@
 // StagerAppGenerator
 // **************************************************************************
 
-import 'posts_list_scenes.dart';
+import 'posts_list_page_scenes.dart';
 
 import 'package:stager/stager.dart';
 

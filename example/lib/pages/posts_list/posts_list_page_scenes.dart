@@ -6,11 +6,11 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:stager/stager.dart';
 
-import '../shared/api.dart';
-import '../shared/post.dart';
-import 'posts_list.dart';
+import '../../shared/api.dart';
+import '../../shared/post.dart';
+import 'posts_list_page.dart';
 
-import 'posts_list_scenes.mocks.dart';
+import 'posts_list_page_scenes.mocks.dart';
 
 @GenerateMocks([Api])
 abstract class BasePostsListScene extends Scene {
@@ -21,7 +21,7 @@ abstract class BasePostsListScene extends Scene {
     return EnvironmentAwareApp(
       home: Provider<Api>.value(
         value: mockApi,
-        child: const PostsList(),
+        child: const PostsListPage(),
       ),
     );
   }
@@ -50,7 +50,7 @@ class WithPostsScene extends BasePostsListScene {
   @override
   Future<void> setUp() async {
     await super.setUp();
-    when(mockApi.fetchPosts()).thenAnswer((_) async => Post.fakePosts);
+    when(mockApi.fetchPosts()).thenAnswer((_) async => Post.fakePosts());
   }
 }
 

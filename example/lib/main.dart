@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'posts_list/posts_list.dart';
+import 'pages/posts_list/posts_list_page.dart';
 import 'shared/api.dart';
 
 void main() {
@@ -13,14 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Provider.value(
-        value: Api(),
-        child: const PostsList(),
+    return Provider.value(
+      value: Api(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const PostsListPage(),
       ),
     );
   }
