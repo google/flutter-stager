@@ -12,6 +12,7 @@ void main() {
   testWidgets('Displays a list of Scenes', (WidgetTester tester) async {
     final stagerApp = StagerApp(scenes: scenes);
     await tester.pumpWidget(stagerApp);
+    await tester.pumpAndSettle();
     expect(find.text('Text'), findsOneWidget);
     expect(find.text('Button'), findsOneWidget);
   });
@@ -20,6 +21,7 @@ void main() {
       (WidgetTester tester) async {
     final stagerApp = StagerApp(scenes: scenes);
     await tester.pumpWidget(stagerApp);
+    await tester.pumpAndSettle();
 
     // Tap the "Text" row to push TextScene onto the navigation stack.
     await tester.tap(find.text('Text'));
