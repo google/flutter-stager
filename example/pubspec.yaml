@@ -14,6 +14,9 @@ dependencies:
   mockito: ^5.2.0
   provider: ^6.0.3
   stager:
+    git:
+      url: git@github.com:bryanoltman/stager.git
+      ref: main
 
 dev_dependencies:
   flutter_test:
