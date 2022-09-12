@@ -40,9 +40,10 @@ class StagerAppGenerator extends Generator {
         sceneElements.map((e) => '${e.name}(),').join('\n');
 
     buffer.write('''
-$importsString
 
 import 'package:stager/stager.dart';
+
+$importsString
 
 void main() {
   final scenes = [
