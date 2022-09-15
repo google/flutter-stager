@@ -1,10 +1,11 @@
-import 'package:example/shared/post_card/post_card.dart';
-import 'package:example/shared/user.dart';
 import 'package:flutter/material.dart';
 import 'package:stager/stager.dart';
 
 import '../post.dart';
+import '../user.dart';
+import 'post_card.dart';
 
+/// A Scene showing a single [PostCard] widget with a fake [Post].
 class PostCardScene extends Scene {
   @override
   String get title => 'Single Card';
@@ -18,8 +19,10 @@ class PostCardScene extends Scene {
   }
 }
 
+/// A Scene showing a [PostsList] with fake [Post]s.
 class PostsListScene extends Scene {
-  final posts = [
+  /// The posts being shown in this scene.
+  final List<Post> posts = <Post>[
     Post(
       id: 1,
       author: User.joeUser,
@@ -48,12 +51,12 @@ class PostsListScene extends Scene {
   Widget build() {
     return EnvironmentAwareApp(
       home: Builder(
-        builder: (context) => Container(
-          color: Theme.of(context).backgroundColor,
+        builder: (BuildContext context) => Container(
+          color: Theme.of(context).colorScheme.background,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             itemCount: posts.length,
-            itemBuilder: (context, index) => PostCard(
+            itemBuilder: (BuildContext context, int index) => PostCard(
               post: posts[index],
               onTap: () {},
             ),

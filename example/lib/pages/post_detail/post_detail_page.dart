@@ -1,25 +1,29 @@
-import 'package:example/pages/user_detail/user_detail_page.dart';
-import 'package:example/shared/post.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/post.dart';
+import '../user_detail/user_detail_page.dart';
 
 /// A page for a single [Post].
 class PostDetailPage extends StatelessWidget {
-  final Post post;
-
+  /// Creates a [PostDetailPage].
   const PostDetailPage({super.key, required this.post});
+
+  /// The [Post] being displayed.
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Post'),
-        actions: [
-          PopupMenuButton(
+        actions: <PopupMenuButton<int>>[
+          PopupMenuButton<int>(
             onSelected: (_) {
-              final navigatorstate = Navigator.of(context);
+              final NavigatorState navigatorstate = Navigator.of(context);
               navigatorstate.push(
-                MaterialPageRoute(
-                  builder: (context) => UserDetailPage(user: post.author),
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      UserDetailPage(user: post.author),
                 ),
               );
             },
@@ -36,15 +40,15 @@ class PostDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 CircleAvatar(
                   child: Text(
                     post.author.name
                         .split(' ')
-                        .map((e) => e[0].toUpperCase())
-                        .join(''),
+                        .map((String e) => e[0].toUpperCase())
+                        .join(),
                   ),
                 ),
                 const SizedBox(width: 10),

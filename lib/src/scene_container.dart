@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stager/src/environment_manipulation_panel.dart';
 
+import 'environment_manipulation_panel.dart';
 import 'multifinger_long_press_gesture_detector.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
@@ -8,9 +8,11 @@ import 'multifinger_long_press_gesture_detector.dart';
 ///
 /// The environment editing widget can be toggled using a two-finger long press.
 class SceneContainer extends StatefulWidget {
-  final Widget child;
-
+  /// Creates a [SceneContainer].
   const SceneContainer({super.key, required this.child});
+
+  /// A Widget produced by [Scene.build] .
+  final Widget child;
 
   @override
   State<SceneContainer> createState() => _SceneContainerState();
@@ -33,7 +35,7 @@ class _SceneContainerState extends State<SceneContainer> {
         });
       }),
       child: Stack(
-        children: [
+        children: <Widget>[
           MediaQuery(
             data: MediaQuery.of(context).copyWith(
               textScaleFactor: _textScale,
@@ -51,7 +53,7 @@ class _SceneContainerState extends State<SceneContainer> {
             // 100 was chosen arbitrarily as a "high enough" value to ensure the
             // panel is not visible when animated out.
             bottom: _showEnvPanel ? 0 : -100,
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             curve: Curves.easeOut,
             child: EnvironmentManipulationPanel(
               targetPlatform: _targetPlatform,
@@ -64,7 +66,8 @@ class _SceneContainerState extends State<SceneContainer> {
               incrementTextScale: () => setState(() {
                 _textScale += 0.1;
               }),
-              onTargetPlatformChanged: (targetPlatform) => setState(() {
+              onTargetPlatformChanged: (TargetPlatform? targetPlatform) =>
+                  setState(() {
                 _targetPlatform = targetPlatform;
               }),
               hidePanel: () => setState(() {

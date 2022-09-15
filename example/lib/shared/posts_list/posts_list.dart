@@ -4,14 +4,22 @@ import '../../pages/post_detail/post_detail_page.dart';
 import '../post.dart';
 import '../post_card/post_card.dart';
 
+// #docregion PostsList
 /// A [ListView] of [PostCard]s
 class PostsList extends StatefulWidget {
-  final Future<List<Post>> postsFuture;
+  /// Creates a [PostsList] displaying [posts].
+  ///
+  /// [postsFuture] will be set to the value of [posts].
+  PostsList({
+    Key? key,
+    required List<Post> posts,
+  }) : this.fromFuture(key: key, Future<List<Post>>.value(posts));
 
-  PostsList({Key? key, required List<Post> posts})
-      : this.fromFuture(key: key, Future.value(posts));
-
+  /// Creates a [PostsList] with a Future that resolves to a list of [Post]s.
   const PostsList.fromFuture(this.postsFuture, {super.key});
+
+  /// The Future that resolves to the list of [Post]s this widget will display.
+  final Future<List<Post>> postsFuture;
 
   @override
   State<PostsList> createState() => _PostsListState();
@@ -20,9 +28,9 @@ class PostsList extends StatefulWidget {
 class _PostsListState extends State<PostsList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<List<Post>>(
       future: widget.postsFuture,
-      builder: (context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -35,7 +43,7 @@ class _PostsListState extends State<PostsList> {
           );
         }
 
-        final posts = snapshot.data;
+        final List<Post>? posts = snapshot.data;
         if (posts == null || posts.isEmpty) {
           return const Center(
             child: Text('No posts'),
@@ -43,12 +51,12 @@ class _PostsListState extends State<PostsList> {
         }
 
         return ListView.builder(
-          itemBuilder: (context, index) => PostCard(
+          itemBuilder: (BuildContext context, int index) => PostCard(
             post: posts[index],
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostDetailPage(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => PostDetailPage(
                     post: posts[index],
                   ),
                 ),
@@ -61,3 +69,4 @@ class _PostsListState extends State<PostsList> {
     );
   }
 }
+// #enddocregion PostsList

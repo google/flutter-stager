@@ -1,16 +1,18 @@
-import 'package:example/shared/api.dart';
-import 'package:example/shared/post.dart';
-import 'package:example/shared/posts_list/posts_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../shared/api.dart';
+import '../../shared/post.dart';
+import '../../shared/posts_list/posts_list.dart';
 import '../../shared/user.dart';
 
 /// A page for a single [User].
 class UserDetailPage extends StatefulWidget {
-  final User user;
-
+  /// Creates a [UserDetailPage] which displays information about [user].
   const UserDetailPage({super.key, required this.user});
+
+  /// The [User] whose info is being displayed.
+  final User user;
 
   @override
   State<UserDetailPage> createState() => _UserDetailPageState();
@@ -37,12 +39,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
         ),
       ),
       body: Column(
-        children: [
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(10),
             child: Text(
               '${widget.user.name} (${widget.user.handle})',
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
           ),
           Expanded(

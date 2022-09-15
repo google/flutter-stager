@@ -1,8 +1,10 @@
-import 'package:example/pages/post_detail/post_detail_page.dart';
-import 'package:example/shared/post.dart';
 import 'package:flutter/material.dart';
 import 'package:stager/stager.dart';
 
+import '../../shared/post.dart';
+import 'post_detail_page.dart';
+
+/// A scene demonstrating a [PostDetailPage] with content.
 class PostDetailPageScene extends Scene {
   @override
   String get title => 'Post Detail';
