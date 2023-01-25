@@ -23,6 +23,7 @@ class _SceneContainerState extends State<SceneContainer> {
 
   double _textScale = 1;
   bool _isDarkMode = false;
+  bool _showSemantics = false;
   TargetPlatform? _targetPlatform;
 
   @override
@@ -44,7 +45,9 @@ class _SceneContainerState extends State<SceneContainer> {
             ),
             child: Theme(
               data: Theme.of(context).copyWith(platform: _targetPlatform),
-              child: widget.child,
+              child: _showSemantics
+                  ? SemanticsDebugger(child: widget.child)
+                  : widget.child,
             ),
           ),
           AnimatedPositioned(
@@ -59,6 +62,9 @@ class _SceneContainerState extends State<SceneContainer> {
               targetPlatform: _targetPlatform,
               toggleDarkMode: () => setState(() {
                 _isDarkMode = !_isDarkMode;
+              }),
+              toggleSemantics: () => setState(() {
+                _showSemantics = !_showSemantics;
               }),
               decrementTextScale: () => setState(() {
                 _textScale -= 0.1;

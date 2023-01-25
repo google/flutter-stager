@@ -7,6 +7,7 @@ class EnvironmentManipulationPanel extends StatefulWidget {
   const EnvironmentManipulationPanel({
     super.key,
     required this.toggleDarkMode,
+    required this.toggleSemantics,
     required this.decrementTextScale,
     required this.incrementTextScale,
     required this.onTargetPlatformChanged,
@@ -16,6 +17,9 @@ class EnvironmentManipulationPanel extends StatefulWidget {
 
   /// Executed when the dark mode button is tapped.
   final VoidCallback toggleDarkMode;
+
+  /// Executed when the semantics button is tapped.
+  final VoidCallback toggleSemantics;
 
   /// Executed when the decrement text scale button is tapped.
   final VoidCallback decrementTextScale;
@@ -70,6 +74,10 @@ class _EnvironmentManipulationPanelState
                 IconButton(
                   onPressed: widget.incrementTextScale,
                   icon: const Icon(Icons.text_increase),
+                ),
+                IconButton(
+                  onPressed: widget.toggleSemantics,
+                  icon: const Icon(Icons.shelves),
                 ),
                 DropdownButton<TargetPlatform>(
                   items: TargetPlatform.values
