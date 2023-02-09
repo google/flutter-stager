@@ -51,7 +51,7 @@ class _StagerAppState extends State<StagerApp> {
 
         return MaterialApp(
           home: _isSingleScene
-              ? SceneContainer(child: widget.scenes.first.build())
+              ? SceneContainer(scene: widget.scenes.first)
               : SceneList(scenes: widget.scenes),
         );
       },
