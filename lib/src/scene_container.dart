@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'control_panel/environment_control_panel.dart';
+import 'control_panel/text_scaler.dart';
 import 'environment_option.dart';
-import 'multifinger_long_press_gesture_detector.dart';
 import 'scene.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
@@ -113,114 +113,101 @@ class _SceneContainerState extends State<SceneContainer> {
   @override
   Widget build(BuildContext context) {
     final double panelWidth = min(MediaQuery.of(context).size.width * 0.8, 350);
-    return MultiTouchLongPressGestureDetector(
-      numberOfTouches: 2,
-      onGestureDetected: () => setState(() {
-        setState(() {
-          _isControlPanelExpanded = !_isControlPanelExpanded;
-        });
-      }),
-      child: Material(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaleFactor: _textScale,
-                platformBrightness:
-                    _isDarkMode ? Brightness.dark : Brightness.light,
-              ),
-              child: Theme(
-                data: Theme.of(context).copyWith(platform: _targetPlatform),
-                child: _showSemantics
-                    ? SemanticsDebugger(child: widget.scene.build())
-                    : widget.scene.build(),
+    return Material(
+      color: Colors.black,
+      child: Stack(
+        children: <Widget>[
+          MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaleFactor: _textScale,
+              platformBrightness:
+                  _isDarkMode ? Brightness.dark : Brightness.light,
+            ),
+            child: Theme(
+              data: Theme.of(context).copyWith(platform: _targetPlatform),
+              child: _showSemantics
+                  ? SemanticsDebugger(child: widget.scene.build())
+                  : widget.scene.build(),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.zero,
+            alignment: Alignment.centerLeft,
+            transform: Matrix4.translationValues(
+              _isControlPanelExpanded ? 0 : -panelWidth,
+              0,
+              0,
+            ),
+            child: SafeArea(
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: panelWidth,
+                    child: EnvironmentControlPanel(
+                      targetPlatform: _targetPlatform,
+                      children: <Widget>[
+                        TextScaler(
+                          textScale: _textScale,
+                          onDecrementPressed: () => setState(() {
+                            _textScale -= 0.1;
+                          }),
+                          onIncrementPressed: () => setState(() {
+                            _textScale += 0.1;
+                          }),
+                        ),
+                        IconButton(
+                          onPressed: () => setState(() {
+                            _showSemantics = !_showSemantics;
+                          }),
+                          icon: const Icon(Icons.shelves),
+                        ),
+                        DropdownButton<TargetPlatform>(
+                          items: TargetPlatform.values
+                              .map(
+                                (TargetPlatform e) =>
+                                    DropdownMenuItem<TargetPlatform>(
+                                  value: e,
+                                  child: Text(e.name),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (TargetPlatform? newValue) => setState(() {
+                            if (newValue != null) {
+                              _targetPlatform = newValue;
+                            }
+                          }),
+                          value: _targetPlatform ?? Theme.of(context).platform,
+                        ),
+                        ..._environmentValues.map(
+                          (EnvironmentValue<dynamic> e) =>
+                              buildPanelButton(context, e),
+                        ),
+                        ...widget.scene.environmentOptionBuilders.map(
+                          (WidgetBuilder builder) => builder(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                    color: Colors.white,
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(10),
+                    onPressed: () {
+                      setState(() {
+                        _isControlPanelExpanded = !_isControlPanelExpanded;
+                      });
+                    },
+                    child: Icon(
+                      _isControlPanelExpanded
+                          ? Icons.arrow_back
+                          : Icons.arrow_forward,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.zero,
-              alignment: Alignment.centerLeft,
-              transform: Matrix4.translationValues(
-                _isControlPanelExpanded ? 0 : -panelWidth,
-                0,
-                0,
-              ),
-              child: SafeArea(
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: panelWidth,
-                      child: EnvironmentControlPanel(
-                        targetPlatform: _targetPlatform,
-                        children: <Widget>[
-                          ..._environmentValues.map(
-                            (EnvironmentValue<dynamic> e) =>
-                                buildPanelButton(context, e),
-                          ),
-                          ...widget.scene.environmentOptionBuilders.map(
-                            (WidgetBuilder builder) => builder(context),
-                          ),
-                          IconButton(
-                            onPressed: () => setState(() {
-                              _textScale -= 0.1;
-                            }),
-                            icon: const Icon(Icons.text_decrease),
-                          ),
-                          IconButton(
-                            onPressed: () => setState(() {
-                              _textScale += 0.1;
-                            }),
-                            icon: const Icon(Icons.text_increase),
-                          ),
-                          IconButton(
-                            onPressed: () => setState(() {
-                              _showSemantics = !_showSemantics;
-                            }),
-                            icon: const Icon(Icons.shelves),
-                          ),
-                          DropdownButton<TargetPlatform>(
-                            items: TargetPlatform.values
-                                .map(
-                                  (TargetPlatform e) =>
-                                      DropdownMenuItem<TargetPlatform>(
-                                    value: e,
-                                    child: Text(e.name),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (TargetPlatform? newValue) =>
-                                setState(() {
-                              if (newValue != null) {
-                                _targetPlatform = newValue;
-                              }
-                            }),
-                            value:
-                                _targetPlatform ?? Theme.of(context).platform,
-                          ),
-                        ],
-                      ),
-                    ),
-                    MaterialButton(
-                      color: Colors.white,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10),
-                      onPressed: () {
-                        setState(() {
-                          _isControlPanelExpanded = !_isControlPanelExpanded;
-                        });
-                      },
-                      child: Icon(
-                        _isControlPanelExpanded
-                            ? Icons.arrow_back
-                            : Icons.arrow_forward,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
