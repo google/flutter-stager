@@ -7,7 +7,6 @@ import 'control_panel/display_size_picker.dart';
 import 'control_panel/dropdown_control.dart';
 import 'control_panel/environment_control_panel.dart';
 import 'control_panel/number_stepper_control.dart';
-import 'environment_option.dart';
 import 'scene.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
@@ -29,52 +28,6 @@ class SceneContainer extends StatefulWidget {
 }
 
 class _SceneContainerState extends State<SceneContainer> {
-  late final EnvironmentOption<bool> darkModeEnvironmentOption =
-      EnvironmentOption<bool>(
-    name: 'Dark Mode',
-    initialValue: false,
-    onValueChanged: (bool newValue) {
-      _isDarkMode = newValue;
-    },
-  );
-
-  late final EnvironmentOption<bool> semanticsOverlayOption =
-      EnvironmentOption<bool>(
-    name: 'Semantics',
-    initialValue: false,
-    onValueChanged: (bool newValue) {
-      _showSemantics = newValue;
-    },
-  );
-
-  Widget buildPanelButton(
-    BuildContext context,
-    EnvironmentValue<dynamic> environmentValue,
-  ) {
-    if (environmentValue is EnvironmentValue<bool>) {
-      return BooleanControl.fromEnvironmentValue(environmentValue);
-    } else {
-      return buildDropDown(context, environmentValue);
-    }
-  }
-
-  Widget buildDropDown(BuildContext context, EnvironmentValue<dynamic> value) {
-    return DropdownButton<dynamic>(
-      items: TargetPlatform.values
-          .map(
-            (TargetPlatform e) => DropdownMenuItem<TargetPlatform>(
-              value: e,
-              child: Text(e.name),
-            ),
-          )
-          .toList(),
-      onChanged: (dynamic newValue) => setState(() {
-        value.option.onValueChanged(newValue);
-      }),
-      value: value.notifier.value,
-    );
-  }
-
   bool _isControlPanelExpanded = false;
   double _textScale = 1;
   bool _isDarkMode = false;
@@ -83,32 +36,11 @@ class _SceneContainerState extends State<SceneContainer> {
   double? _widthOverride;
   double? _heightOverride;
 
-  List<EnvironmentValue<dynamic>> _environmentValues =
-      <EnvironmentValue<dynamic>>[];
-
   @override
   void initState() {
     super.initState();
 
     widget.scene.rebuildScene = () => setState(() {});
-
-    _environmentValues = <EnvironmentValue<dynamic>>[
-      darkModeEnvironmentOption.makeEnvironmentValue(),
-      semanticsOverlayOption.makeEnvironmentValue(),
-    ];
-
-    _environmentValues.addAll(
-      widget.scene.environmentOptions
-          .map((EnvironmentOption<dynamic> e) => e.makeEnvironmentValue()),
-    );
-
-    for (final EnvironmentValue<dynamic> environmentValue
-        in _environmentValues) {
-      environmentValue.notifier.addListener(() {
-        // environmentValue.option.onValueChanged(environmentValue.notifier.value);
-        setState(() {});
-      });
-    }
   }
 
   @override
@@ -152,9 +84,23 @@ class _SceneContainerState extends State<SceneContainer> {
                     child: EnvironmentControlPanel(
                       targetPlatform: _targetPlatform,
                       children: <Widget>[
-                        ..._environmentValues.map(
-                          (EnvironmentValue<dynamic> e) =>
-                              buildPanelButton(context, e),
+                        BooleanControl(
+                          title: const Text('Dark Mode'),
+                          isOn: _isDarkMode,
+                          onChanged: (bool newValue) {
+                            setState(() {
+                              _isDarkMode = newValue;
+                            });
+                          },
+                        ),
+                        BooleanControl(
+                          title: const Text('Semantics'),
+                          isOn: _showSemantics,
+                          onChanged: (bool newValue) {
+                            setState(() {
+                              _showSemantics = newValue;
+                            });
+                          },
                         ),
                         NumberStepperControl(
                           title: const Text('Text Scale'),

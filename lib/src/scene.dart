@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'environment_option.dart';
-
 /// The central class of Stager, used to demonstrate a single piece of UI.
 ///
 /// Use [setUp] to configure dependencies and [build] to create the Widget you
@@ -74,13 +72,13 @@ abstract class Scene {
   /// This is called on every rebuild, including by Hot Reload.
   Widget build();
 
-  /// TODO
+  /// Invoke this to force Stager to rebuild the current [Scene]. You will most
+  /// likely only need this if you are providing custom
+  /// [environmentOptionBuilders].
   VoidCallback? rebuildScene;
 
-  /// TODO
+  /// Used to provide custom controls to Stager's [EnvironmentControlPanel].
+  ///
+  /// TODO(bryanoltman): add more docs
   List<WidgetBuilder> environmentOptionBuilders = <WidgetBuilder>[];
-
-  /// TODO
-  List<EnvironmentOption<dynamic>> environmentOptions =
-      <EnvironmentOption<dynamic>>[];
 }

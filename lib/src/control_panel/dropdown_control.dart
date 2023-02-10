@@ -1,42 +1,43 @@
 import 'package:flutter/material.dart';
 
-/// TODO
+/// An [EnvironmentControlPanel] widget that allows the user to choose from one
+/// of several options.
 class DropdownControl<T> extends StatelessWidget {
-  /// TODO
   const DropdownControl({
     super.key,
     required this.title,
+    required this.value,
     required this.items,
     required this.onChanged,
-    this.value,
-    this.titleBuilder,
+    this.itemTitleBuilder,
   });
 
-  /// TODO
+  /// The name of this config option.
   final Widget title;
 
-  /// TODO
+  /// The currently selected item.
+  final T value;
+
+  /// A list of all available items.
   final List<T> items;
 
-  /// TODO
+  /// Called when a [value] is changed.
   final void Function(T?) onChanged;
 
-  /// TODO
-  final T? value;
-
-  /// TODO
-  final String Function(T)? titleBuilder;
+  /// Used to customize the text of [items] in the drop down. Use this when
+  /// overriding [T.toString()] is not possible or not desirable.
+  final String Function(T)? itemTitleBuilder;
 
   String _titleForItem(T? item) {
     if (item == null) {
       return '';
     }
 
-    if (titleBuilder == null) {
+    if (itemTitleBuilder == null) {
       return item.toString();
     }
 
-    return titleBuilder!(item);
+    return itemTitleBuilder!(item);
   }
 
   @override

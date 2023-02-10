@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../environment_option.dart';
-
-/// TODO
+/// An [EnvironmentControlPanel] widget that allows a user to toggle an
+/// arbitrary environment value.
 class BooleanControl extends StatelessWidget {
   /// TODO
   const BooleanControl({
@@ -12,24 +11,13 @@ class BooleanControl extends StatelessWidget {
     required this.onChanged,
   });
 
-  /// TODO
-  factory BooleanControl.fromEnvironmentValue(EnvironmentValue<bool> value) {
-    return BooleanControl(
-      title: Text(value.option.name),
-      isOn: value.notifier.value,
-      onChanged: (bool newValue) {
-        value.notifier.value = !value.notifier.value;
-      },
-    );
-  }
-
-  /// TODO
+  /// The name of the value being controlled.
   final Widget title;
 
-  /// TODO
+  /// Whether the value is toggled on or not.
   final bool isOn;
 
-  /// TODO
+  /// Called when the [Switch] is toggled.
   final void Function(bool) onChanged;
 
   @override
