@@ -54,52 +54,59 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: <Widget>[
-        Row(
+        const Text('Screen Size'),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              width: 75,
-              child: TextField(
-                controller: _widthTextEditingController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(hintText: 'Width'),
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 75,
-              child: TextField(
-                controller: _heightTextEditingController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(hintText: 'Height'),
-              ),
-            ),
-          ],
-        ),
-        DropdownButton<ScreenSizePreset>(
-          items: ScreenSizePreset.all
-              .map(
-                (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
-                  value: e,
-                  child: Text(
-                    '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 75,
+                  child: TextField(
+                    controller: _widthTextEditingController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Width'),
                   ),
                 ),
-              )
-              .toList(),
-          value: _selectedScreenSizePreset,
-          onChanged: (ScreenSizePreset? newValue) {
-            _selectedScreenSizePreset = newValue;
-            if (newValue != null) {
-              _heightTextEditingController.text =
-                  newValue.size.height.toString();
-              _widthTextEditingController.text = newValue.size.width.toString();
-              widget.didChangeSize(width, height);
-            }
-          },
-          // ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 75,
+                  child: TextField(
+                    controller: _heightTextEditingController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Height'),
+                  ),
+                ),
+              ],
+            ),
+            DropdownButton<ScreenSizePreset>(
+              items: ScreenSizePreset.all
+                  .map(
+                    (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
+                      value: e,
+                      child: Text(
+                        '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
+                      ),
+                    ),
+                  )
+                  .toList(),
+              value: _selectedScreenSizePreset,
+              onChanged: (ScreenSizePreset? newValue) {
+                _selectedScreenSizePreset = newValue;
+                if (newValue != null) {
+                  _heightTextEditingController.text =
+                      newValue.size.height.toString();
+                  _widthTextEditingController.text =
+                      newValue.size.width.toString();
+                  widget.didChangeSize(width, height);
+                }
+              },
+              // ),
+            ),
+          ],
         ),
       ],
     );

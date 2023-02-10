@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
 /// TODO
-class TextScaler extends StatelessWidget {
+class NumberStepper extends StatelessWidget {
   /// TODO
-  const TextScaler({
+  const NumberStepper({
     super.key,
-    required this.textScale,
+    required this.title,
+    required this.value,
     required this.onDecrementPressed,
     required this.onIncrementPressed,
   });
 
+  final Widget title;
+
   /// TODO
-  final double textScale;
+  final double value;
 
   /// TODO
   final VoidCallback onDecrementPressed;
@@ -19,19 +22,19 @@ class TextScaler extends StatelessWidget {
   /// TODO
   final VoidCallback onIncrementPressed;
 
-  String get _displayTextScale => textScale.toStringAsFixed(1);
+  String get _displayTextScale => value.toStringAsFixed(1);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
+        title,
         IconButton(
           onPressed: onDecrementPressed,
           icon: const Icon(Icons.text_decrease),
         ),
         Text(
           _displayTextScale,
-          textScaleFactor: 1.4,
         ),
         IconButton(
           onPressed: onIncrementPressed,

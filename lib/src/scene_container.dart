@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'control_panel/boolean_control.dart';
+import 'control_panel/dropdown_control.dart';
 import 'control_panel/environment_control_panel.dart';
-import 'control_panel/text_scaler.dart';
+import 'control_panel/number_stepper.dart';
 import 'environment_option.dart';
 import 'scene.dart';
 
@@ -35,14 +37,21 @@ class _SceneContainerState extends State<SceneContainer> {
     },
   );
 
+  late final EnvironmentOption<bool> semanticsOverlayOption =
+      EnvironmentOption<bool>(
+    name: 'Semantics',
+    initialValue: false,
+    onValueChanged: (bool newValue) {
+      _showSemantics = newValue;
+    },
+  );
+
   Widget buildPanelButton(
     BuildContext context,
     EnvironmentValue<dynamic> environmentValue,
   ) {
     if (environmentValue is EnvironmentValue<bool>) {
-      return buildBoolPanelButton(context, environmentValue);
-      // } else if (environmentValue is EnvironmentValue<int>) {
-      //   return IntPanelButton(environmentValue: environmentValue)
+      return BooleanControl.fromEnvironmentValue(environmentValue);
     } else {
       return buildDropDown(context, environmentValue);
     }
@@ -65,18 +74,6 @@ class _SceneContainerState extends State<SceneContainer> {
     );
   }
 
-  Widget buildBoolPanelButton(
-    BuildContext context,
-    EnvironmentValue<bool> environmentValue,
-  ) {
-    return IconButton(
-      onPressed: () {
-        environmentValue.notifier.value = !environmentValue.notifier.value;
-      },
-      icon: const Icon(Icons.light_mode),
-    );
-  }
-
   bool _isControlPanelExpanded = false;
   double _textScale = 1;
   bool _isDarkMode = false;
@@ -94,6 +91,7 @@ class _SceneContainerState extends State<SceneContainer> {
 
     _environmentValues = <EnvironmentValue<dynamic>>[
       darkModeEnvironmentOption.makeEnvironmentValue(),
+      semanticsOverlayOption.makeEnvironmentValue(),
     ];
 
     _environmentValues.addAll(
@@ -146,8 +144,9 @@ class _SceneContainerState extends State<SceneContainer> {
                     child: EnvironmentControlPanel(
                       targetPlatform: _targetPlatform,
                       children: <Widget>[
-                        TextScaler(
-                          textScale: _textScale,
+                        NumberStepper(
+                          title: const Text('Text Scale'),
+                          value: _textScale,
                           onDecrementPressed: () => setState(() {
                             _textScale -= 0.1;
                           }),
@@ -155,28 +154,17 @@ class _SceneContainerState extends State<SceneContainer> {
                             _textScale += 0.1;
                           }),
                         ),
-                        IconButton(
-                          onPressed: () => setState(() {
-                            _showSemantics = !_showSemantics;
-                          }),
-                          icon: const Icon(Icons.shelves),
-                        ),
-                        DropdownButton<TargetPlatform>(
-                          items: TargetPlatform.values
-                              .map(
-                                (TargetPlatform e) =>
-                                    DropdownMenuItem<TargetPlatform>(
-                                  value: e,
-                                  child: Text(e.name),
-                                ),
-                              )
-                              .toList(),
+                        DropdownControl<TargetPlatform>(
+                          title: const Text('Target Platform'),
+                          items: TargetPlatform.values,
                           onChanged: (TargetPlatform? newValue) => setState(() {
                             if (newValue != null) {
                               _targetPlatform = newValue;
                             }
                           }),
                           value: _targetPlatform ?? Theme.of(context).platform,
+                          titleBuilder: (TargetPlatform platform) =>
+                              platform.name,
                         ),
                         ..._environmentValues.map(
                           (EnvironmentValue<dynamic> e) =>
