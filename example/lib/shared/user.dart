@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 /// A person or entity that creates [Post]s.
-class User {
+class User extends Equatable {
   /// Creates a [User].
-  User({
+  const User({
     required this.id,
     required this.name,
     required this.handle,
@@ -16,15 +18,21 @@ class User {
   /// This user's @ handle.
   final String handle;
 
+  @override
+  List<Object?> get props => <Object?>[id, name, handle];
+
+  @override
+  String toString() => handle;
+
   /// A fake user named "Joe User".
-  static User joeUser = User(
+  static User joeUser = const User(
     id: 1,
     name: 'Joe User',
     handle: '@joe',
   );
 
   /// A fake user named "Alice User".
-  static User aliceUser = User(
+  static User aliceUser = const User(
     id: 2,
     name: 'Alice User',
     handle: '@alice',

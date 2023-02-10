@@ -1,9 +1,11 @@
+import 'package:equatable/equatable.dart';
+
 import 'user.dart';
 
 /// A single tweet-like entry.
-class Post {
+class Post extends Equatable {
   /// Creates a [Post].
-  Post({
+  const Post({
     required this.id,
     required this.text,
     required this.author,
@@ -22,6 +24,14 @@ class Post {
   /// When this post was created.
   final DateTime time;
 
+  @override
+  List<Object?> get props => <Object?>[id, text, author, time];
+
+  @override
+  String toString() {
+    return '$author: $text';
+  }
+
   /// Generates a List of [Post]s. If [user] is specified, all posts will have
   /// that user as an author. If no [user] is specified, each [Post] will have a
   /// distinct fake [User] as its author.
@@ -31,7 +41,7 @@ class Post {
           id: index + 1,
           text: 'Post ${index + 1}',
           author: user ?? User.fakeUser(id: index + 1),
-          time: DateTime.now(),
+          time: DateTime(2023, 1, 1, 1).add(Duration(minutes: index)),
         ),
       );
 }

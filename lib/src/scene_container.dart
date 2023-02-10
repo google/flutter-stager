@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'control_panel/boolean_control.dart';
+import 'control_panel/display_size_picker.dart';
 import 'control_panel/dropdown_control.dart';
 import 'control_panel/environment_control_panel.dart';
-import 'control_panel/number_stepper.dart';
+import 'control_panel/number_stepper_control.dart';
 import 'environment_option.dart';
 import 'scene.dart';
 
@@ -79,6 +80,8 @@ class _SceneContainerState extends State<SceneContainer> {
   bool _isDarkMode = false;
   bool _showSemantics = false;
   TargetPlatform? _targetPlatform;
+  double? _widthOverride;
+  double? _heightOverride;
 
   List<EnvironmentValue<dynamic>> _environmentValues =
       <EnvironmentValue<dynamic>>[];
@@ -114,6 +117,7 @@ class _SceneContainerState extends State<SceneContainer> {
     return Material(
       color: Colors.black,
       child: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
           MediaQuery(
             data: MediaQuery.of(context).copyWith(
@@ -123,9 +127,13 @@ class _SceneContainerState extends State<SceneContainer> {
             ),
             child: Theme(
               data: Theme.of(context).copyWith(platform: _targetPlatform),
-              child: _showSemantics
-                  ? SemanticsDebugger(child: widget.scene.build())
-                  : widget.scene.build(),
+              child: SizedBox(
+                width: _widthOverride ?? MediaQuery.of(context).size.width,
+                height: _heightOverride ?? MediaQuery.of(context).size.height,
+                child: _showSemantics
+                    ? SemanticsDebugger(child: widget.scene.build())
+                    : widget.scene.build(),
+              ),
             ),
           ),
           Container(
@@ -144,7 +152,11 @@ class _SceneContainerState extends State<SceneContainer> {
                     child: EnvironmentControlPanel(
                       targetPlatform: _targetPlatform,
                       children: <Widget>[
-                        NumberStepper(
+                        ..._environmentValues.map(
+                          (EnvironmentValue<dynamic> e) =>
+                              buildPanelButton(context, e),
+                        ),
+                        NumberStepperControl(
                           title: const Text('Text Scale'),
                           value: _textScale,
                           onDecrementPressed: () => setState(() {
@@ -153,6 +165,15 @@ class _SceneContainerState extends State<SceneContainer> {
                           onIncrementPressed: () => setState(() {
                             _textScale += 0.1;
                           }),
+                        ),
+                        DisplaySizePicker(
+                          initialSize: MediaQuery.of(context).size,
+                          didChangeSize: (double? width, double? height) {
+                            setState(() {
+                              _widthOverride = width;
+                              _heightOverride = height;
+                            });
+                          },
                         ),
                         DropdownControl<TargetPlatform>(
                           title: const Text('Target Platform'),
@@ -163,12 +184,8 @@ class _SceneContainerState extends State<SceneContainer> {
                             }
                           }),
                           value: _targetPlatform ?? Theme.of(context).platform,
-                          titleBuilder: (TargetPlatform platform) =>
+                          itemTitleBuilder: (TargetPlatform platform) =>
                               platform.name,
-                        ),
-                        ..._environmentValues.map(
-                          (EnvironmentValue<dynamic> e) =>
-                              buildPanelButton(context, e),
                         ),
                         ...widget.scene.environmentOptionBuilders.map(
                           (WidgetBuilder builder) => builder(context),

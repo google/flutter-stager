@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 /// TODO
-class NumberStepper extends StatelessWidget {
+class NumberStepperControl extends StatelessWidget {
   /// TODO
-  const NumberStepper({
+  const NumberStepperControl({
     super.key,
     required this.title,
     required this.value,
@@ -13,13 +13,13 @@ class NumberStepper extends StatelessWidget {
 
   final Widget title;
 
-  /// TODO
+  /// The current value.
   final double value;
 
-  /// TODO
+  /// Executed when the increment button is pressed.
   final VoidCallback onDecrementPressed;
 
-  /// TODO
+  /// Executed when the decrement button is pressed.
   final VoidCallback onIncrementPressed;
 
   String get _displayTextScale => value.toStringAsFixed(1);

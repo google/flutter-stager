@@ -6,11 +6,8 @@ import 'post_detail_page.dart';
 
 /// A scene demonstrating a [PostDetailPage] with content.
 class PostDetailPageScene extends Scene {
-  /// TODO
-  double? heightOverride;
-
-  /// TODO
-  double? widthOverride;
+  /// The post being previewed.
+  Post currentPost = Post.fakePosts().first;
 
   @override
   String get title => 'Post Detail';
@@ -18,32 +15,26 @@ class PostDetailPageScene extends Scene {
   @override
   List<WidgetBuilder> get environmentOptionBuilders => <WidgetBuilder>[
         (BuildContext context) {
-          return DisplaySizePicker(
-            didChangeSize: (double? width, double? height) {
-              widthOverride = width;
-              heightOverride = height;
-              if (rebuildScene != null) {
+          return DropdownControl<Post>(
+              value: currentPost,
+              title: const Text('Post'),
+              items: Post.fakePosts(),
+              onChanged: (Post? newPost) {
+                if (newPost == null) {
+                  return;
+                }
+
+                currentPost = newPost;
                 rebuildScene!();
-              }
-            },
-          );
+              });
         },
       ];
 
   @override
   Widget build() {
     return EnvironmentAwareApp(
-      home: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: heightOverride,
-            width: widthOverride,
-            child: PostDetailPage(
-              post: Post.fakePosts().first,
-            ),
-          ),
-        ],
+      home: PostDetailPage(
+        post: currentPost,
       ),
     );
   }

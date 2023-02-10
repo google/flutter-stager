@@ -6,7 +6,14 @@ import '../extensions/string_extensions.dart';
 /// of popular device presets.
 class DisplaySizePicker extends StatefulWidget {
   /// TODO
-  const DisplaySizePicker({super.key, required this.didChangeSize});
+  const DisplaySizePicker({
+    super.key,
+    this.initialSize,
+    required this.didChangeSize,
+  });
+
+  /// TODO
+  final Size? initialSize;
 
   /// Called when the width or height values are updated, either by text input
   /// or by the user selecting one of the [ScreenSizePreset]s.
@@ -36,6 +43,11 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
     super.initState();
     _heightTextEditingController = TextEditingController();
     _widthTextEditingController = TextEditingController();
+
+    if (widget.initialSize != null) {
+      _heightTextEditingController.text = widget.initialSize!.height.toString();
+      _widthTextEditingController.text = widget.initialSize!.width.toString();
+    }
 
     _heightTextEditingController.addListener(
       () => widget.didChangeSize(width, height),
