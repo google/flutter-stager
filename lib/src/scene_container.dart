@@ -128,8 +128,8 @@ class _SceneContainerState extends State<SceneContainer> {
             child: Theme(
               data: Theme.of(context).copyWith(platform: _targetPlatform),
               child: SizedBox(
-                width: _widthOverride ?? MediaQuery.of(context).size.width,
-                height: _heightOverride ?? MediaQuery.of(context).size.height,
+                width: _widthOverride,
+                height: _heightOverride,
                 child: _showSemantics
                     ? SemanticsDebugger(child: widget.scene.build())
                     : widget.scene.build(),
@@ -167,7 +167,6 @@ class _SceneContainerState extends State<SceneContainer> {
                           }),
                         ),
                         DisplaySizePicker(
-                          initialSize: MediaQuery.of(context).size,
                           didChangeSize: (double? width, double? height) {
                             setState(() {
                               _widthOverride = width;
