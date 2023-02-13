@@ -12,6 +12,8 @@ class PostDetailPageScene extends Scene {
   @override
   String get title => 'Post Detail';
 
+  /// This [Scene] overrides the otional [environmentOptionBuilders] getter to
+  /// add a custom control to the Stager environment control panel.
   @override
   List<WidgetBuilder> get environmentOptionBuilders => <WidgetBuilder>[
         (BuildContext context) {
@@ -24,6 +26,8 @@ class PostDetailPageScene extends Scene {
                   return;
                 }
 
+                // When a new [Post] is chosen, call [rebuildScene()] to update
+                // the UI with the newly chosen post.
                 currentPost = newPost;
                 rebuildScene!();
               });
