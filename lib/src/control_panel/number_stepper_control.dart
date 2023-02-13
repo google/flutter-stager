@@ -11,10 +11,11 @@ class NumberStepperControl extends StatelessWidget {
     required this.onIncrementPressed,
   });
 
+  /// TODO
   final Widget title;
 
   /// The current value.
-  final double value;
+  final num value;
 
   /// Executed when the increment button is pressed.
   final VoidCallback onDecrementPressed;
@@ -31,14 +32,14 @@ class NumberStepperControl extends StatelessWidget {
         title,
         IconButton(
           onPressed: onDecrementPressed,
-          icon: const Icon(Icons.text_decrease),
+          icon: const Icon(Icons.remove),
         ),
         Text(
           _displayTextScale,
         ),
         IconButton(
           onPressed: onIncrementPressed,
-          icon: const Icon(Icons.text_increase),
+          icon: const Icon(Icons.add),
         ),
       ],
     );
