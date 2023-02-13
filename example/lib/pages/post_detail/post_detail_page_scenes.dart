@@ -29,7 +29,7 @@ class PostDetailPageScene extends Scene {
                 // When a new [Post] is chosen, call [rebuildScene()] to update
                 // the UI with the newly chosen post.
                 currentPost = newPost;
-                rebuildScene!();
+                rebuildScene();
               });
         },
       ];

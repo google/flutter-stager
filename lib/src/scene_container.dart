@@ -28,6 +28,7 @@ class SceneContainer extends StatefulWidget {
 }
 
 class _SceneContainerState extends State<SceneContainer> {
+  Key _containerKey = UniqueKey();
   bool _isControlPanelExpanded = false;
   double _textScale = 1;
   bool _isDarkMode = false;
@@ -40,7 +41,11 @@ class _SceneContainerState extends State<SceneContainer> {
   void initState() {
     super.initState();
 
-    widget.scene.rebuildScene = () => setState(() {});
+    widget.scene.rebuildScene = () {
+      // Reset _containerKey to a new unique value to ensure that all
+      // StatefulWidgets in the Scene recreate their state.
+      setState(() => _containerKey = UniqueKey());
+    };
   }
 
   @override
@@ -60,6 +65,7 @@ class _SceneContainerState extends State<SceneContainer> {
             child: Theme(
               data: Theme.of(context).copyWith(platform: _targetPlatform),
               child: SizedBox(
+                key: _containerKey,
                 width: _widthOverride,
                 height: _heightOverride,
                 child: _showSemantics

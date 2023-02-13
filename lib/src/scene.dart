@@ -72,10 +72,10 @@ abstract class Scene {
   /// This is called on every rebuild, including by Hot Reload.
   Widget build();
 
-  /// Invoke this to force Stager to rebuild the current [Scene]. You will most
-  /// likely only need this if you are providing custom
-  /// [environmentOptionBuilders].
-  VoidCallback? rebuildScene;
+  /// Invoke this to force Stager to rebuild the current [Scene]. Stager assigns
+  /// a value to this property – you should never need to set it. You will most
+  /// likely only need this if you are providing custom [environmentOptionBuilders].
+  VoidCallback rebuildScene = () {};
 
   /// Used to provide custom controls to Stager's [EnvironmentControlPanel].
   ///

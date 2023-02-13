@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// An [EnvironmentControlPanel] widget that allows the user to choose from one
 /// of several options.
 class DropdownControl<T> extends StatelessWidget {
+  /// TODO
   const DropdownControl({
     super.key,
     required this.title,
