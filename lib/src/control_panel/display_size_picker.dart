@@ -94,29 +94,29 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
                 ),
               ],
             ),
-            DropdownButton<ScreenSizePreset>(
-              items: ScreenSizePreset.all
-                  .map(
-                    (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
-                      value: e,
-                      child: Text(
-                        '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
-                      ),
+            DropdownButton<ScreenSizePreset?>(
+              items: <DropdownMenuItem<ScreenSizePreset?>>[
+                const DropdownMenuItem<ScreenSizePreset?>(
+                  child: Text('Current Window'),
+                ),
+                ...ScreenSizePreset.all.map(
+                  (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
+                    value: e,
+                    child: Text(
+                      '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              ],
               value: _selectedScreenSizePreset,
               onChanged: (ScreenSizePreset? newValue) {
                 _selectedScreenSizePreset = newValue;
-                if (newValue != null) {
-                  _heightTextEditingController.text =
-                      newValue.size.height.toString();
-                  _widthTextEditingController.text =
-                      newValue.size.width.toString();
-                  widget.didChangeSize(width, height);
-                }
+                final Size newSize =
+                    newValue?.size ?? MediaQuery.of(context).size;
+                _heightTextEditingController.text = newSize.height.toString();
+                _widthTextEditingController.text = newSize.width.toString();
+                widget.didChangeSize(width, height);
               },
-              // ),
             ),
           ],
         ),
