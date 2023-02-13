@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 /// An [EnvironmentControlPanel] widget that allows a user to toggle an
 /// arbitrary environment value.
 class BooleanControl extends StatelessWidget {
-  /// TODO
+  /// An [EnvironmentControlPanel] widget that allows a user to toggle an
+  /// arbitrary environment value.
   const BooleanControl({
     super.key,
     required this.title,

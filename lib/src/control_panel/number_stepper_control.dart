@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// TODO
+/// An [EnvironmentControlPanel] widget that allows a user to decrease and
+/// increase a numerical value.
 class NumberStepperControl extends StatelessWidget {
-  /// TODO
+  /// An [EnvironmentControlPanel] widget that allows a user to decrease and
+  /// increase a numerical value.
   const NumberStepperControl({
     super.key,
     required this.title,
@@ -11,7 +13,7 @@ class NumberStepperControl extends StatelessWidget {
     required this.onIncrementPressed,
   });
 
-  /// TODO
+  /// The name of the value being manipulated.
   final Widget title;
 
   /// The current value.

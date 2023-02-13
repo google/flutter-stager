@@ -5,7 +5,9 @@ import '../extensions/string_extensions.dart';
 /// Allows the user to input custom screen dimensions or to select from a list
 /// of popular device presets.
 class DisplaySizePicker extends StatefulWidget {
-  /// TODO
+  /// An [EnvironmentControlPanel] widget that allows the user to change the
+  /// display dimensions of the current [Scene]. A user may select from one of
+  /// several [ScreenSizePreset]s or manually enter width and height values.
   const DisplaySizePicker({
     super.key,
     required this.didChangeSize,
@@ -13,7 +15,7 @@ class DisplaySizePicker extends StatefulWidget {
 
   /// Called when the width or height values are updated, either by text input
   /// or by the user selecting one of the [ScreenSizePreset]s.
-  final void Function(double? width, double? height) didChangeSize;
+  final void Function(num? width, num? height) didChangeSize;
 
   @override
   State<DisplaySizePicker> createState() => _DisplaySizePickerState();
@@ -24,14 +26,14 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
   late final TextEditingController _widthTextEditingController;
   ScreenSizePreset? _selectedScreenSizePreset;
 
-  double? get height {
+  num? get height {
     final String heightString = _heightTextEditingController.text;
-    return heightString.isNullOrEmpty ? null : double.parse(heightString);
+    return heightString.isNullOrEmpty ? null : num.parse(heightString);
   }
 
-  double? get width {
+  num? get width {
     final String widthString = _widthTextEditingController.text;
-    return widthString.isNullOrEmpty ? null : double.parse(widthString);
+    return widthString.isNullOrEmpty ? null : num.parse(widthString);
   }
 
   @override
@@ -59,8 +61,8 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
 
   @override
   void dispose() {
-    _widthTextEditingController.dispose();
     _heightTextEditingController.dispose();
+    _widthTextEditingController.dispose();
     super.dispose();
   }
 
@@ -126,9 +128,10 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
 }
 
 /// A named screen size, usually a popular device and its logical pixel dimensions.
+/// TODO: add more devices
 class ScreenSizePreset {
-  /// TODO
-  ScreenSizePreset({required this.name, required this.size});
+  /// A named screen size, usually a popular device and its logical pixel dimensions.
+  const ScreenSizePreset({required this.name, required this.size});
 
   /// The device associated with [size].
   final String name;
@@ -136,29 +139,29 @@ class ScreenSizePreset {
   /// The logical height and width of the device.
   final Size size;
 
-  static final ScreenSizePreset _iPhone14Plus = ScreenSizePreset(
+  static const ScreenSizePreset _iPhone14Plus = ScreenSizePreset(
     name: 'iPhone 14 Plus',
-    size: const Size(429, 926),
+    size: Size(429, 926),
   );
 
-  static final ScreenSizePreset _iPadPro12_9 = ScreenSizePreset(
+  static const ScreenSizePreset _iPadPro12_9 = ScreenSizePreset(
     name: 'iPad Pro 12.9"',
-    size: const Size(1024, 1366),
+    size: Size(1024, 1366),
   );
 
-  static final ScreenSizePreset _iPadPro11 = ScreenSizePreset(
+  static const ScreenSizePreset _iPadPro11 = ScreenSizePreset(
     name: 'iPad Pro 11"',
-    size: const Size(834, 1194),
+    size: Size(834, 1194),
   );
 
-  static final ScreenSizePreset _pixel6Pro = ScreenSizePreset(
+  static const ScreenSizePreset _pixel6Pro = ScreenSizePreset(
     name: 'Pixel 6 Pro',
-    size: const Size(360, 780),
+    size: Size(360, 780),
   );
 
-  static final ScreenSizePreset _verySmall = ScreenSizePreset(
+  static const ScreenSizePreset _verySmall = ScreenSizePreset(
     name: 'Very small',
-    size: const Size(100, 100),
+    size: Size(100, 100),
   );
 
   /// All available device size presets.

@@ -34,8 +34,8 @@ class _SceneContainerState extends State<SceneContainer> {
   bool _isDarkMode = false;
   bool _showSemantics = false;
   TargetPlatform? _targetPlatform;
-  double? _widthOverride;
-  double? _heightOverride;
+  num? _heightOverride;
+  num? _widthOverride;
 
   @override
   void initState() {
@@ -66,8 +66,8 @@ class _SceneContainerState extends State<SceneContainer> {
               data: Theme.of(context).copyWith(platform: _targetPlatform),
               child: SizedBox(
                 key: _containerKey,
-                width: _widthOverride,
-                height: _heightOverride,
+                width: _widthOverride?.toDouble(),
+                height: _heightOverride?.toDouble(),
                 child: _showSemantics
                     ? SemanticsDebugger(child: widget.scene.build())
                     : widget.scene.build(),
@@ -119,7 +119,7 @@ class _SceneContainerState extends State<SceneContainer> {
                           }),
                         ),
                         DisplaySizePicker(
-                          didChangeSize: (double? width, double? height) {
+                          didChangeSize: (num? width, num? height) {
                             setState(() {
                               _widthOverride = width;
                               _heightOverride = height;
