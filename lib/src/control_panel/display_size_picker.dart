@@ -69,58 +69,63 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         const Text('Screen Size'),
         const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 75,
-                  child: TextField(
-                    controller: _widthTextEditingController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Width'),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: 75,
-                  child: TextField(
-                    controller: _heightTextEditingController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Height'),
-                  ),
-                ),
-              ],
-            ),
-            DropdownButton<ScreenSizePreset?>(
-              items: <DropdownMenuItem<ScreenSizePreset?>>[
-                const DropdownMenuItem<ScreenSizePreset?>(
-                  child: Text('Current Window'),
-                ),
-                ...ScreenSizePreset.all.map(
-                  (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
-                    value: e,
-                    child: Text(
-                      '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 75,
+                    child: TextField(
+                      controller: _widthTextEditingController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(hintText: 'Width'),
                     ),
                   ),
-                ),
-              ],
-              value: _selectedScreenSizePreset,
-              onChanged: (ScreenSizePreset? newValue) {
-                _selectedScreenSizePreset = newValue;
-                final Size newSize =
-                    newValue?.size ?? MediaQuery.of(context).size;
-                _heightTextEditingController.text = newSize.height.toString();
-                _widthTextEditingController.text = newSize.width.toString();
-                widget.didChangeSize(width, height);
-              },
-            ),
-          ],
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 75,
+                    child: TextField(
+                      controller: _heightTextEditingController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(hintText: 'Height'),
+                    ),
+                  ),
+                ],
+              ),
+              DropdownButton<ScreenSizePreset?>(
+                isExpanded: true,
+                items: <DropdownMenuItem<ScreenSizePreset?>>[
+                  const DropdownMenuItem<ScreenSizePreset?>(
+                    child: Text('Current Window'),
+                  ),
+                  ...ScreenSizePreset.all.map(
+                    (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
+                      value: e,
+                      child: Text(
+                        '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
+                value: _selectedScreenSizePreset,
+                onChanged: (ScreenSizePreset? newValue) {
+                  _selectedScreenSizePreset = newValue;
+                  final Size newSize =
+                      newValue?.size ?? MediaQuery.of(context).size;
+                  _heightTextEditingController.text = newSize.height.toString();
+                  _widthTextEditingController.text = newSize.width.toString();
+                  widget.didChangeSize(width, height);
+                },
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -137,6 +142,26 @@ class ScreenSizePreset {
 
   /// The logical height and width of the device.
   final Size size;
+
+  static const ScreenSizePreset _galaxyA51_71 = ScreenSizePreset(
+    name: 'Galaxy A51/71',
+    size: Size(412, 914),
+  );
+
+  static const ScreenSizePreset _galaxyFold = ScreenSizePreset(
+    name: 'Galaxy Fold',
+    size: Size(280, 653),
+  );
+
+  static const ScreenSizePreset _galaxyS20Ultra = ScreenSizePreset(
+    name: 'Galaxy S20 Ultra',
+    size: Size(412, 915),
+  );
+
+  static const ScreenSizePreset _galaxyS8Plus = ScreenSizePreset(
+    name: 'Galaxy S8+',
+    size: Size(360, 740),
+  );
 
   static const ScreenSizePreset _iPadAir = ScreenSizePreset(
     name: 'iPad Air',
@@ -183,26 +208,6 @@ class ScreenSizePreset {
     size: Size(360, 780),
   );
 
-  static const ScreenSizePreset _samsungGalaxyA51_71 = ScreenSizePreset(
-    name: 'Samsung Galaxy A51/71',
-    size: Size(412, 914),
-  );
-
-  static const ScreenSizePreset _samsungGalaxyFold = ScreenSizePreset(
-    name: 'Samsung Galaxy Fold',
-    size: Size(280, 653),
-  );
-
-  static const ScreenSizePreset _samsungGalaxyS20Ultra = ScreenSizePreset(
-    name: 'Samsung Galaxy S20 Ultra',
-    size: Size(412, 915),
-  );
-
-  static const ScreenSizePreset _samsungGalaxyS8Plus = ScreenSizePreset(
-    name: 'Samsung Galaxy S8+',
-    size: Size(360, 740),
-  );
-
   static const ScreenSizePreset _surfacePro7 = ScreenSizePreset(
     name: 'Surface Pro 7',
     size: Size(912, 1368),
@@ -210,6 +215,10 @@ class ScreenSizePreset {
 
   /// All available device size presets.
   static const List<ScreenSizePreset> all = <ScreenSizePreset>[
+    _galaxyA51_71,
+    _galaxyFold,
+    _galaxyS20Ultra,
+    _galaxyS8Plus,
     _iPadAir,
     _iPadMini,
     _iPadPro11,
@@ -219,10 +228,6 @@ class ScreenSizePreset {
     _iPhoneSE,
     _pixel5,
     _pixel6Pro,
-    _samsungGalaxyA51_71,
-    _samsungGalaxyFold,
-    _samsungGalaxyS20Ultra,
-    _samsungGalaxyS8Plus,
     _surfacePro7,
   ];
 }
