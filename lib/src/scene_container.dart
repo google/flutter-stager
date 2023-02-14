@@ -138,7 +138,7 @@ class _SceneContainerState extends State<SceneContainer> {
                           itemTitleBuilder: (TargetPlatform platform) =>
                               platform.name,
                         ),
-                        ...widget.scene.environmentOptionBuilders.map(
+                        ...widget.scene.environmentControlBuilders.map(
                           (WidgetBuilder builder) => builder(context),
                         ),
                       ],

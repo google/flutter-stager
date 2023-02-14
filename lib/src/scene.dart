@@ -74,11 +74,18 @@ abstract class Scene {
 
   /// Invoke this to force Stager to rebuild the current [Scene]. Stager assigns
   /// a value to this property – you should never need to set it. You will most
-  /// likely only need this if you are providing custom [environmentOptionBuilders].
+  /// likely only need this if you override [environmentControlBuilders].
   VoidCallback rebuildScene = () {};
 
   /// Used to provide custom controls to Stager's [EnvironmentControlPanel].
   ///
-  /// TODO(bryanoltman): add more docs
-  List<WidgetBuilder> environmentOptionBuilders = <WidgetBuilder>[];
+  /// Stager provides several widgets that should address most use cases,
+  /// including the [NumberStepperControl], [DropdownControl], and
+  /// [BooleanControl]. However the WidgetBuilders in this list can return any
+  /// arbitrary widget.
+  ///
+  /// To make effective use of this functionality, these widgets should
+  /// mutate a property defined on this Scene in the various onChange callbacks
+  /// **and call [rebuildScene()] afterwards.**
+  List<WidgetBuilder> environmentControlBuilders = <WidgetBuilder>[];
 }

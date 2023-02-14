@@ -12,10 +12,10 @@ class PostDetailPageScene extends Scene {
   @override
   String get title => 'Post Detail';
 
-  /// This [Scene] overrides the otional [environmentOptionBuilders] getter to
+  /// This [Scene] overrides the otional [environmentControlBuilders] getter to
   /// add a custom control to the Stager environment control panel.
   @override
-  List<WidgetBuilder> get environmentOptionBuilders => <WidgetBuilder>[
+  List<WidgetBuilder> get environmentControlBuilders => <WidgetBuilder>[
         (BuildContext context) {
           return DropdownControl<Post>(
               value: currentPost,
