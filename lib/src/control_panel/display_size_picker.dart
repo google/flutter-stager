@@ -15,7 +15,7 @@ class DisplaySizePicker extends StatefulWidget {
 
   /// Called when the width or height values are updated, either by text input
   /// or by the user selecting one of the [ScreenSizePreset]s.
-  final void Function(num? width, num? height) didChangeSize;
+  final void Function(int? width, int? height) didChangeSize;
 
   @override
   State<DisplaySizePicker> createState() => _DisplaySizePickerState();
@@ -26,14 +26,14 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
   late final TextEditingController _widthTextEditingController;
   ScreenSizePreset? _selectedScreenSizePreset;
 
-  num? get height {
+  int? get height {
     final String heightString = _heightTextEditingController.text;
-    return heightString.isNullOrEmpty ? null : num.parse(heightString);
+    return heightString.isNullOrEmpty ? null : int.parse(heightString);
   }
 
-  num? get width {
+  int? get width {
     final String widthString = _widthTextEditingController.text;
-    return widthString.isNullOrEmpty ? null : num.parse(widthString);
+    return widthString.isNullOrEmpty ? null : int.parse(widthString);
   }
 
   @override
@@ -46,8 +46,9 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final Size screenSize = MediaQuery.of(context).size;
       setState(() {
-        _heightTextEditingController.text = screenSize.height.toString();
-        _widthTextEditingController.text = screenSize.width.toString();
+        _heightTextEditingController.text =
+            screenSize.height.toStringAsFixed(0);
+        _widthTextEditingController.text = screenSize.width.toStringAsFixed(0);
       });
     });
 
@@ -119,8 +120,10 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
                   _selectedScreenSizePreset = newValue;
                   final Size newSize =
                       newValue?.size ?? MediaQuery.of(context).size;
-                  _heightTextEditingController.text = newSize.height.toString();
-                  _widthTextEditingController.text = newSize.width.toString();
+                  _heightTextEditingController.text =
+                      newSize.height.toStringAsFixed(0);
+                  _widthTextEditingController.text =
+                      newSize.width.toStringAsFixed(0);
                   widget.didChangeSize(width, height);
                 },
               ),
