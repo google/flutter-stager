@@ -90,6 +90,14 @@ class _SceneContainerState extends State<SceneContainer> {
                     child: EnvironmentControlPanel(
                       targetPlatform: _targetPlatform,
                       children: <Widget>[
+                        if (Navigator.of(context).canPop())
+                          IconButton(
+                            key: const ValueKey<String>('PopToSceneListButton'),
+                            onPressed: () =>
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop(),
+                            icon: const Icon(Icons.arrow_back),
+                          ),
                         BooleanControl(
                           title: const Text('Dark Mode'),
                           isOn: _isDarkMode,

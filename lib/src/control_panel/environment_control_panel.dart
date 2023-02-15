@@ -39,12 +39,6 @@ class _EnvironmentControlPanelState extends State<EnvironmentControlPanel> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              if (Navigator.of(context).canPop())
-                IconButton(
-                  onPressed: () =>
-                      Navigator.of(context, rootNavigator: true).pop(),
-                  icon: const Icon(Icons.arrow_back),
-                ),
               ...widget.children,
             ],
           ),
