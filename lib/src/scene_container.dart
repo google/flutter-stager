@@ -64,9 +64,11 @@ class _SceneContainerState extends State<SceneContainer> {
                 key: _containerKey,
                 width: _widthOverride?.toDouble(),
                 height: _heightOverride?.toDouble(),
-                child: _showSemantics
-                    ? SemanticsDebugger(child: widget.scene.build())
-                    : widget.scene.build(),
+                child: ClipRect(
+                  child: _showSemantics
+                      ? SemanticsDebugger(child: widget.scene.build())
+                      : widget.scene.build(),
+                ),
               ),
             ),
           ),
