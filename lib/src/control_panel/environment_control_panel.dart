@@ -7,7 +7,6 @@ class EnvironmentControlPanel extends StatefulWidget {
   const EnvironmentControlPanel({
     super.key,
     required this.children,
-    // required this.hidePanel,
     this.targetPlatform,
   });
 
