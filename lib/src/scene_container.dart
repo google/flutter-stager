@@ -38,6 +38,7 @@ class _SceneContainerState extends State<SceneContainer> {
   num? _widthOverride;
 
   void _rebuildScene() {
+    // Create a new UniqueKey to force recreation of StatefulWidgets' states.
     setState(() => _containerKey = UniqueKey());
   }
 

@@ -9,7 +9,7 @@ void main() {
     TextScene(),
   ];
 
-  testWidgets('Displays a list of Scenes', (WidgetTester tester) async {
+  testWidgets('displays a list of Scenes', (WidgetTester tester) async {
     final StagerApp stagerApp = StagerApp(scenes: scenes);
     await tester.pumpWidget(stagerApp);
     await tester.pumpAndSettle();
@@ -17,7 +17,7 @@ void main() {
     expect(find.text('Button'), findsOneWidget);
   });
 
-  testWidgets('Displays a back button after navigating to a Scene',
+  testWidgets('displays a back button after navigating to a Scene',
       (WidgetTester tester) async {
     final StagerApp stagerApp = StagerApp(scenes: scenes);
     await tester.pumpWidget(stagerApp);

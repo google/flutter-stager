@@ -23,7 +23,8 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('Dark mode toggles brightness', (WidgetTester tester) async {
+  testWidgets('dark mode control toggles brightness',
+      (WidgetTester tester) async {
     await createAppAndShowControlPanel(tester);
 
     expect(
@@ -58,7 +59,7 @@ void main() {
     );
   });
 
-  testWidgets('Text size stepper adjusts text scale',
+  testWidgets('text size stepper adjusts text scale',
       (WidgetTester tester) async {
     await createAppAndShowControlPanel(tester);
 
@@ -91,7 +92,8 @@ void main() {
     expect(sceneContainerMediaQuery().data.textScaleFactor, 0.9);
   });
 
-  testWidgets('Toggles semantics overlay', (WidgetTester tester) async {
+  testWidgets('semantics overlay control toggles SemanticsDebugger',
+      (WidgetTester tester) async {
     await createAppAndShowControlPanel(tester);
 
     expect(find.byType(SemanticsDebugger), findsNothing);
@@ -117,7 +119,7 @@ void main() {
     expect(find.byType(SemanticsDebugger), findsNothing);
   });
 
-  group('Adjusts display size', () {
+  group('adjusts display size', () {
     SizedBox findSceneFrame() {
       return find
           .descendant(
@@ -131,7 +133,7 @@ void main() {
           .widget as SizedBox;
     }
 
-    testWidgets('When height and width text fields are edited',
+    testWidgets('when height and width text fields are edited',
         (WidgetTester tester) async {
       await createAppAndShowControlPanel(tester);
 
@@ -157,7 +159,7 @@ void main() {
       expect(findSceneFrame().width, 200);
     });
 
-    testWidgets('When a preset is chosen from the dropdown',
+    testWidgets('when a preset is chosen from the dropdown',
         (WidgetTester tester) async {
       await createAppAndShowControlPanel(tester);
 
@@ -180,7 +182,8 @@ void main() {
     });
   });
 
-  testWidgets('Changes target platform', (WidgetTester tester) async {
+  testWidgets('target platform control changes target platform',
+      (WidgetTester tester) async {
     await createAppAndShowControlPanel(tester);
     // [Theme.platform] defaults to [TargetPlatform.android]
     expect(
@@ -206,7 +209,7 @@ void main() {
     );
   });
 
-  testWidgets('Shows custom environment controls when present',
+  testWidgets('panel shows custom environment controls when present',
       (WidgetTester tester) async {
     await createAppAndShowControlPanel(tester);
 

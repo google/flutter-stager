@@ -79,7 +79,7 @@ abstract class Scene {
   /// This is called on every rebuild, including by Hot Reload.
   Widget build();
 
-  /// Used to present custom controls to Stager's [EnvironmentControlPanel].
+  /// Used to add custom controls to the [EnvironmentControlPanel].
   ///
   /// Stager provides several widgets that should address most use cases,
   /// including the [NumberStepperControl], [DropdownControl], and
