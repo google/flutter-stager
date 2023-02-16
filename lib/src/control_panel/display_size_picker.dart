@@ -83,6 +83,7 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
                   SizedBox(
                     width: 75,
                     child: TextField(
+                      key: const ValueKey<String>('DisplayWidthTextField'),
                       controller: _widthTextEditingController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(hintText: 'Width'),
@@ -92,6 +93,7 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
                   SizedBox(
                     width: 75,
                     child: TextField(
+                      key: const ValueKey<String>('DisplayHeightTextField'),
                       controller: _heightTextEditingController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(hintText: 'Height'),
@@ -99,14 +101,16 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
                   ),
                 ],
               ),
-              DropdownButton<ScreenSizePreset?>(
+              DropdownButton<ScreenSizePreset>(
+                key: const ValueKey<String>('ScreenSizePresetDropdown'),
                 isExpanded: true,
-                items: <DropdownMenuItem<ScreenSizePreset?>>[
-                  const DropdownMenuItem<ScreenSizePreset?>(
+                items: <DropdownMenuItem<ScreenSizePreset>>[
+                  const DropdownMenuItem<ScreenSizePreset>(
                     child: Text('Current Window'),
                   ),
                   ...ScreenSizePreset.all.map(
                     (ScreenSizePreset e) => DropdownMenuItem<ScreenSizePreset>(
+                      key: ValueKey<String>(e.name),
                       value: e,
                       child: Text(
                         '${e.name} (${e.size.width.toInt()} x ${e.size.height.toInt()})',

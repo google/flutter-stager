@@ -50,13 +50,15 @@ class _SceneContainerState extends State<SceneContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final double panelWidth = min(MediaQuery.of(context).size.width * 0.8, 350);
+    final double panelWidth =
+        min(MediaQuery.of(context).size.width * 0.75, 400);
     return Material(
       color: Colors.black,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
           MediaQuery(
+            key: const ValueKey<String>('SceneContainerMediaQuery'),
             data: MediaQuery.of(context).copyWith(
               textScaleFactor: _textScale,
               platformBrightness:
@@ -99,6 +101,9 @@ class _SceneContainerState extends State<SceneContainer> {
                             icon: const Icon(Icons.arrow_back),
                           ),
                         BooleanControl(
+                          key: const ValueKey<String>(
+                            'ToggleDarkModeControl',
+                          ),
                           title: const Text('Dark Mode'),
                           isOn: _isDarkMode,
                           onChanged: (bool newValue) {
@@ -108,6 +113,9 @@ class _SceneContainerState extends State<SceneContainer> {
                           },
                         ),
                         BooleanControl(
+                          key: const ValueKey<String>(
+                            'ToggleSemanticsOverlayControl',
+                          ),
                           title: const Text('Semantics'),
                           isOn: _showSemantics,
                           onChanged: (bool newValue) {
@@ -117,6 +125,9 @@ class _SceneContainerState extends State<SceneContainer> {
                           },
                         ),
                         NumberStepperControl(
+                          key: const ValueKey<String>(
+                            'TextScaleStepperControl',
+                          ),
                           title: const Text('Text Scale'),
                           value: _textScale,
                           onDecrementPressed: () => setState(() {
@@ -153,6 +164,9 @@ class _SceneContainerState extends State<SceneContainer> {
                     ),
                   ),
                   MaterialButton(
+                    key: const ValueKey<String>(
+                      'ToggleEnvironmentControlPanelButton',
+                    ),
                     color: Colors.white,
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(10),

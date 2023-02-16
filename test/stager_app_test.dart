@@ -30,8 +30,16 @@ void main() {
     // Verify that our SceneContainer is present.
     expect(find.byType(SceneContainer), findsOneWidget);
 
+    // Expand the EnvironmentControlPanel.
+    await tester.tap(
+      find.byKey(const ValueKey<String>('ToggleEnvironmentControlPanelButton')),
+    );
+    await tester.pumpAndSettle();
+
     // Verify that tapping the back button navigates back.
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byKey(
+      const ValueKey<String>('PopToSceneListButton'),
+    ));
     await tester.pumpAndSettle();
     expect(find.byType(SceneContainer), findsNothing);
     expect(find.text('Text'), findsOneWidget);
