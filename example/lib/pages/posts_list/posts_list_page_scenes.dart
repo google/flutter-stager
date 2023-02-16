@@ -59,8 +59,9 @@ class WithPostsScene extends BasePostsListScene {
   String get title => 'With Posts';
 
   @override
-  List<WidgetBuilder> get environmentControlBuilders => <WidgetBuilder>[
-        (BuildContext context) {
+  List<EnvironmentControlBuilder> get environmentControlBuilders =>
+      <EnvironmentControlBuilder>[
+        (_, VoidCallback rebuildScene) {
           return NumberStepperControl(
             title: const Text('# Posts'),
             value: _numPosts,

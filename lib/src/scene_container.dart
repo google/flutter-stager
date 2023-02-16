@@ -37,15 +37,8 @@ class _SceneContainerState extends State<SceneContainer> {
   num? _heightOverride;
   num? _widthOverride;
 
-  @override
-  void initState() {
-    super.initState();
-
-    widget.scene.rebuildScene = () {
-      // Reset _containerKey to a new unique value to ensure that all
-      // StatefulWidgets in the Scene recreate their state.
-      setState(() => _containerKey = UniqueKey());
-    };
+  void _rebuildScene() {
+    setState(() => _containerKey = UniqueKey());
   }
 
   @override
@@ -157,9 +150,10 @@ class _SceneContainerState extends State<SceneContainer> {
                           itemTitleBuilder: (TargetPlatform platform) =>
                               platform.name,
                         ),
-                        ...widget.scene.environmentControlBuilders.map(
-                          (WidgetBuilder builder) => builder(context),
-                        ),
+                        ...widget.scene.environmentControlBuilders
+                            .map((EnvironmentControlBuilder builder) {
+                          return builder(context, _rebuildScene);
+                        }),
                       ],
                     ),
                   ),

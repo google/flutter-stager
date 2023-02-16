@@ -15,8 +15,9 @@ class PostDetailPageScene extends Scene {
   /// This [Scene] overrides the otional [environmentControlBuilders] getter to
   /// add a custom control to the Stager environment control panel.
   @override
-  List<WidgetBuilder> get environmentControlBuilders => <WidgetBuilder>[
-        (BuildContext context) {
+  List<EnvironmentControlBuilder> get environmentControlBuilders =>
+      <EnvironmentControlBuilder>[
+        (_, VoidCallback rebuildScene) {
           return DropdownControl<Post>(
               value: currentPost,
               title: const Text('Post'),
