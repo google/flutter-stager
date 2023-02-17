@@ -32,6 +32,7 @@ class _SceneContainerState extends State<SceneContainer> {
   bool _isControlPanelExpanded = false;
   double _textScale = 1;
   bool _isDarkMode = false;
+  bool _isTextBold = false;
   bool _showSemantics = false;
   TargetPlatform? _targetPlatform;
   num? _heightOverride;
@@ -54,6 +55,7 @@ class _SceneContainerState extends State<SceneContainer> {
           MediaQuery(
             key: const ValueKey<String>('SceneContainerMediaQuery'),
             data: MediaQuery.of(context).copyWith(
+              boldText: _isTextBold,
               textScaleFactor: _textScale,
               platformBrightness:
                   _isDarkMode ? Brightness.dark : Brightness.light,
@@ -105,6 +107,18 @@ class _SceneContainerState extends State<SceneContainer> {
                           onChanged: (bool newValue) {
                             setState(() {
                               _isDarkMode = newValue;
+                            });
+                          },
+                        ),
+                        BooleanControl(
+                          key: const ValueKey<String>(
+                            'ToggleBoldTextControl',
+                          ),
+                          title: const Text('Bold Text'),
+                          isOn: _isTextBold,
+                          onChanged: (bool newValue) {
+                            setState(() {
+                              _isTextBold = newValue;
                             });
                           },
                         ),

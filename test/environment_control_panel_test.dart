@@ -58,6 +58,32 @@ void main() {
       Brightness.light,
     );
   });
+  testWidgets('bold text control toggles bold text',
+      (WidgetTester tester) async {
+    await createAppAndShowControlPanel(tester);
+
+    expect(sceneContainerMediaQuery().data.boldText, false);
+
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('ToggleBoldTextControl')),
+        matching: find.byType(Switch),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(sceneContainerMediaQuery().data.boldText, true);
+
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('ToggleBoldTextControl')),
+        matching: find.byType(Switch),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(sceneContainerMediaQuery().data.boldText, false);
+  });
 
   testWidgets('text size stepper adjusts text scale',
       (WidgetTester tester) async {
