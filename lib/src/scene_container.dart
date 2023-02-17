@@ -132,6 +132,8 @@ class _SceneContainerState extends State<SceneContainer> {
                           onIncrementPressed: () => setState(() {
                             _textScale += 0.1;
                           }),
+                          valueDisplayBuilder: (num value) =>
+                              value.toStringAsFixed(1),
                         ),
                         DisplaySizePicker(
                           didChangeSize: (num? width, num? height) {

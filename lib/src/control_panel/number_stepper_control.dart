@@ -11,6 +11,7 @@ class NumberStepperControl extends StatelessWidget {
     required this.value,
     required this.onDecrementPressed,
     required this.onIncrementPressed,
+    this.valueDisplayBuilder,
   });
 
   /// The name of the value being manipulated.
@@ -25,7 +26,17 @@ class NumberStepperControl extends StatelessWidget {
   /// Executed when the decrement button is pressed.
   final VoidCallback onIncrementPressed;
 
-  String get _displayTextScale => value.toStringAsFixed(1);
+  /// Used to customize how the [value] is displayed in the
+  /// [EnvironmentControlPanel].
+  final String Function(num)? valueDisplayBuilder;
+
+  String get _displayValue {
+    if (valueDisplayBuilder != null) {
+      return valueDisplayBuilder!(value);
+    }
+
+    return value.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +47,7 @@ class NumberStepperControl extends StatelessWidget {
           onPressed: onDecrementPressed,
           icon: const Icon(Icons.remove),
         ),
-        Text(
-          _displayTextScale,
-        ),
+        Text(_displayValue),
         IconButton(
           onPressed: onIncrementPressed,
           icon: const Icon(Icons.add),
