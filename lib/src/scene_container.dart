@@ -6,7 +6,7 @@ import 'control_panel/boolean_control.dart';
 import 'control_panel/display_size_picker.dart';
 import 'control_panel/dropdown_control.dart';
 import 'control_panel/environment_control_panel.dart';
-import 'control_panel/number_stepper_control.dart';
+import 'control_panel/stepper_control.dart';
 import 'scene.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
@@ -134,20 +134,18 @@ class _SceneContainerState extends State<SceneContainer> {
                             });
                           },
                         ),
-                        NumberStepperControl(
+                        StepperControl(
                           key: const ValueKey<String>(
                             'TextScaleStepperControl',
                           ),
                           title: const Text('Text Scale'),
-                          value: _textScale,
+                          value: _textScale.toStringAsFixed(1),
                           onDecrementPressed: () => setState(() {
                             _textScale -= 0.1;
                           }),
                           onIncrementPressed: () => setState(() {
                             _textScale += 0.1;
                           }),
-                          valueDisplayBuilder: (num value) =>
-                              value.toStringAsFixed(1),
                         ),
                         DisplaySizePicker(
                           didChangeSize: (num? width, num? height) {

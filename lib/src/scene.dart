@@ -82,12 +82,12 @@ abstract class Scene {
   /// Used to add custom controls to the [EnvironmentControlPanel].
   ///
   /// Stager provides several widgets that should address most use cases,
-  /// including the [NumberStepperControl], [DropdownControl], and
-  /// [BooleanControl]. However, the Widgets returned by the
-  /// [EnvironmentControlBuilder]s in this list can return any arbitrary widget.
+  /// including the [StepperControl], [DropdownControl], and [BooleanControl].
+  /// However, the Widgets returned by the [EnvironmentControlBuilder]s in this
+  /// list can return any arbitrary widget.
   ///
-  /// The example below demonstrates usage of the [NumberStepperControl] to
-  /// increment and decrement a value that is reflected on screen.
+  /// The example below demonstrates usage of the [StepperControl] to increment
+  /// and decrement a value that is reflected on screen.
   ///
   /// ```
   /// class CounterScene extends Scene {
@@ -110,7 +110,7 @@ abstract class Scene {
   ///   @override
   ///   List<EnvironmentControlBuilder> get environmentControlBuilders => [
   ///         (_, VoidCallback rebuildScene) {
-  ///           return NumberStepperControl(
+  ///           return StepperControl(
   ///             title: const Text('Count'),
   ///             value: count,
   ///             onDecrementPressed: () {

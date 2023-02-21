@@ -62,9 +62,9 @@ class WithPostsScene extends BasePostsListScene {
   List<EnvironmentControlBuilder> get environmentControlBuilders =>
       <EnvironmentControlBuilder>[
         (_, VoidCallback rebuildScene) {
-          return NumberStepperControl(
+          return StepperControl(
             title: const Text('# Posts'),
-            value: _numPosts,
+            value: _numPosts.toString(),
             onDecrementPressed: () async {
               _numPosts = max(0, _numPosts - 1);
               rebuildScene();
