@@ -28,6 +28,8 @@ class SceneContainer extends StatefulWidget {
 }
 
 class _SceneContainerState extends State<SceneContainer> {
+  static const Duration _panelAnimationDuration = Duration(milliseconds: 250);
+
   Key _containerKey = UniqueKey();
   bool _isControlPanelExpanded = false;
   double _textScale = 1;
@@ -82,7 +84,7 @@ class _SceneContainerState extends State<SceneContainer> {
               0,
               0,
             ),
-            duration: const Duration(milliseconds: 250),
+            duration: _panelAnimationDuration,
             curve: Curves.easeOutCubic,
             child: SafeArea(
               child: Row(
@@ -191,10 +193,10 @@ class _SceneContainerState extends State<SceneContainer> {
                         _isControlPanelExpanded = !_isControlPanelExpanded;
                       });
                     },
-                    child: Icon(
-                      _isControlPanelExpanded
-                          ? Icons.arrow_back
-                          : Icons.arrow_forward,
+                    child: AnimatedRotation(
+                      duration: _panelAnimationDuration,
+                      turns: _isControlPanelExpanded ? 0.5 : 0.0,
+                      child: const Icon(Icons.arrow_forward),
                     ),
                   ),
                 ],
