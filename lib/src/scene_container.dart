@@ -74,7 +74,7 @@ class _SceneContainerState extends State<SceneContainer> {
               ),
             ),
           ),
-          Container(
+          AnimatedContainer(
             padding: EdgeInsets.zero,
             alignment: Alignment.centerLeft,
             transform: Matrix4.translationValues(
@@ -82,6 +82,8 @@ class _SceneContainerState extends State<SceneContainer> {
               0,
               0,
             ),
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
             child: SafeArea(
               child: Row(
                 children: <Widget>[
@@ -156,7 +158,10 @@ class _SceneContainerState extends State<SceneContainer> {
                           },
                         ),
                         DropdownControl<TargetPlatform>(
-                          title: const Text('Target Platform'),
+                          title: const SizedBox(
+                            width: EnvironmentControlPanel.labelWidth,
+                            child: Text('Target Platform'),
+                          ),
                           items: TargetPlatform.values,
                           onChanged: (TargetPlatform? newValue) => setState(() {
                             if (newValue != null) {

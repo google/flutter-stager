@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'environment_control_panel.dart';
+
 /// An [EnvironmentControlPanel] widget that allows a user to toggle an
 /// arbitrary environment value.
 class BooleanControl extends StatelessWidget {
@@ -25,7 +27,10 @@ class BooleanControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        title,
+        SizedBox(
+          width: EnvironmentControlPanel.labelWidth,
+          child: title,
+        ),
         Switch(
           value: isOn,
           onChanged: onChanged,

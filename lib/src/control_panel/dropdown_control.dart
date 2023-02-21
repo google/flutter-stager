@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'environment_control_panel.dart';
+
 /// An [EnvironmentControlPanel] widget that allows the user to choose from one
 /// of several options.
 class DropdownControl<T> extends StatelessWidget {
@@ -46,7 +48,10 @@ class DropdownControl<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        title,
+        SizedBox(
+          width: EnvironmentControlPanel.labelWidth,
+          child: title,
+        ),
         const SizedBox(width: 8),
         DropdownButton<T>(
           value: value,

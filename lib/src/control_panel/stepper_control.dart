@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'environment_control_panel.dart';
+
 /// An [EnvironmentControlPanel] widget that allows a user to decrease and
 /// increase a numerical value.
 class StepperControl extends StatelessWidget {
@@ -29,7 +31,10 @@ class StepperControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        title,
+        SizedBox(
+          width: EnvironmentControlPanel.labelWidth,
+          child: title,
+        ),
         IconButton(
           onPressed: onDecrementPressed,
           icon: const Icon(Icons.remove),
