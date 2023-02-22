@@ -2,54 +2,86 @@
 
 # Stager
 
-Stager enables rapid Flutter development and encourages good architectural practices by allowing developers quickly launch and develop isolated portions of an app.
+Stager is a Flutter development tool that allows you to run small portions of your app as independent Flutter apps. This lets you:
 
-Stager can accelerate your development workflow for widgets that:
+- Focus your development on a single widget or flow – no more clicking through multiple screens or setting external feature flags to reach the page you're working on.
+- Ensure your UI works in wide number of cases, including:
+  - Light and Dark mode
+  - Small or large text sizes
+  - Different viewport sizes
+  - Different device types
+  - Loading, empty, error, and normal states
+- Show all of this to your designers to make sure your app is pixel-perfect.
 
-- Have multiple states (empty, error, loading, etc.) that would otherwise require code changes to trigger.
-- Are cumbersome to navigate to.
-- Are hidden behind a feature flag.
-- Behave differently based on external state (e.g., the type of currently logged-in user).
+## Demo
 
-A Stager app for a ListView displaying forum-style posts:
+![example app demo](https://user-images.githubusercontent.com/581764/219502623-bfe44091-a582-460e-b97d-e786bc614a8c.gif)
 
-![example app demo](https://user-images.githubusercontent.com/581764/181614468-cbb89cbe-d16a-44bf-831e-47139ce3a7c0.gif)
+The example included in this repo demonstrates how Stager can be used in the context of a simple Twitter-like app that displays a feed of posts and includes detail pages for posts and users.
+
+Stager uses Scenes (see the [Concepts](#concepts) section below) that you define to generate small Flutter apps. To run the Stager apps included in the example, start by moving to the `example` directory and fetching the app's dependencies:
+
+```bash
+cd example
+flutter pub get
+```
+
+NOTE: The Stager `main` files for the example have already been generated. To generate a Stager `main` file from files containins Scenes, run `flutter run build_runner` from your app's home folder.
+
+You can then run the indivdual Stager apps with the following commands:
+
+**Posts List**
+```bash
+flutter run -t lib/pages/posts_list/posts_list_page_scenes.stager_app.g.dart
+```
+
+**User Detail**
+```bash
+flutter run -t lib/pages/user_detail/user_detail_page_scenes.stager_app.g.dart
+```
+
+**Post Detail**
+```bash
+flutter run -t lib/pages/post_detail/post_detail_page_scenes.stager_app.g.dart
+```
+
+To get an idea of how these Scenes fit together, you can also run the main app by executing `flutter run` from the `example` directory, which runs the default `main.dart`.
 
 ## Concepts
 
 ### Scene
 
-The most important class in Stager is the Scene class. A Scene is a simple, self-contained unit of UI. Scenes make it easy to focus on a single widget or page to greatly increase development velocity by isolating them from the rest of your app and allowing fine control of dependencies.
+A Scene is a simple, self-contained unit of UI, and is the most important idea in Stager. Scenes make it easy to focus on a single widget or page to greatly increase development velocity by isolating it from the rest of your app. This isolation makes it much easier to provide your UI with a wide variety of inputs and to swap out dependencies with mocks or alternate implementations.
 
-A Scene has three parts:
+To create your own Scene, simply create a `Scene` subclass and implement `title`, the name of your Scene, and `build()`, which constructs body of the Scene.
 
-#### `title`
-
-The name of the Scene.
+You can also override the following methods and properties:
 
 #### `setUp`
 
 A function that is called once before the Scene is displayed. This will generally be where you configure your widget's dependencies.
 
-#### `build`
+#### `environmentControlBuilders`
 
-A function that constructs your widget.
+An optional list of `EnvironmentControlBuilder`s that allow you to add custom widgets to the Stager control panel. `EnvironmentControlBuilder` is a function similar to a `WidgetBuilder` – it accepts a `BuildContext` as a parameter and returns a `Widget`. It also accepts an additional `rebuildScene` callback that you can use to tell Stager to reconstruct your Scene.
+
+Stager calls these functions when constructing a Scene and places the widgets they return in the environment control panel.
+
+These are useful if you want to manipulate things specific to your app, including:
+
+- Data displayed by your widget
+- Properties on mocked dependenices
+- Feature flags
+
+Widgets placed in the environment control panel typically have callbacks that update an environment value or values (a parameter to a widget in your Scene or the behavior of a dependency) and then call `rebuildScene`, which reconstructs the Scene to reflect the changes.
+
+You can return any arbitrary widget from these functions.
 
 ### StagerApp
 
 A StagerApp displays a list of Scenes, allow the user to select from all available Scenes. Because Scenes can contain their own Navigators, the StagerApp overlays a back button on top of the Scenes.
 
-## Demo
-
-See the example directory for a demo that highlights some of the useful things Stager allows you to do, including:
-
-1. The ability to alter environment settings (dark/light mode, text size, etc.) that would otherwise require
-a trip to the Settings app or require booting up another emulator/simulator or device.
-1. The ability to reuse Scenes in widget tests. If you aren't already writing widget tests, Scenes make it **very** easy
-to start.
-1. The ability to quickly move between different states (empty, loading, etc.) without having to make changes to app code
-to "fake" those states.
-1. The ability to easily develop a hard-to-reach screens.
+You will generally not need to interact with this class directly – Stager will generate this for you. Once you've written your Scene classes, simply run `flutter run build_runner` from your project root to generate a file containing a `main()` entrypoint that creates a StagerApp with your Scenes.
 
 ## Use
 
@@ -131,9 +163,9 @@ Normally, exercising all states in this widget would involve:
 
 Scenes present a better way to do this.
 
-### Building a Scene
+### Making a Scene
 
-We can create a Scene for each state we want to show. For example, a Scene showing the empty state might look something like:
+We can create a Scene for each state we want to show. For example, a Scene showing the PostsListPage's empty state might look something like:
 
 <?code-excerpt "pages/posts_list/posts_list_page_scenes.dart (PostsListPageScene)"?>
 ```dart
@@ -176,19 +208,16 @@ class EmptyListScene extends BasePostsListScene {
 }
 ```
 
-See the example project for more scenes.
-
 ### Running a StagerApp
 
-To generate the `StagerApp`, run:
+Once you have created a Scene subclass, generate your `StagerApp`:
 
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-This will generate a `my_scenes.stager_app.g.dart` file, which contains a `main` function that creates your Scenes and launches a StagerApp. For the above Scene, it would look something like:
+This will generate a `my_scenes.stager_app.g.dart` file (if you named the file containing your Scenes `my_scenes.dart`), which contains a `main` function that creates your Scenes and launches a StagerApp. For the `EmptyListScene` we defined above, it would look something like:
 
-<?code-excerpt "pages/posts_list/posts_list_page_scenes.stager_app.g.dart"?>
 ```dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -203,9 +232,6 @@ import 'posts_list_page_scenes.dart';
 void main() {
   final List<Scene> scenes = <Scene>[
     EmptyListScene(),
-    WithPostsScene(),
-    LoadingScene(),
-    ErrorScene(),
   ];
 
   if (const String.fromEnvironment('Scene').isNotEmpty) {
@@ -219,17 +245,72 @@ void main() {
 }
 ```
 
-This can be run using:
+You can launch this app directly from VS Code, or by running:
 
 ```bash
 flutter run -t path/to/my_scenes.stager_app.g.dart
 ```
 
-You can launch to a specific scene by providing the name of the scene as an argument:
+If your Stager app consists of multiple Scenes, you can launch to a specific scene by providing the name of the scene as an argument:
 
 ```bash
 flutter run -t path/to/my_scenes.stager_app.g.dart --dart-define='Scene=No Posts'
 ```
+
+### Adding your own environment controls
+
+Stager's control panel comes with a generally useful set of controls that enable you to toggle dark mode, adjust text scale, etc. However, it is very likely that your app has unique environment properties that would be useful to adjust at runtime. To support this, Scenes have an overridable `environmentControlBuilders` property which allows you to add custom widgets to the default set of environment manipulation controls.
+
+A very simple example:
+
+```dart
+class CounterScene extends Scene {
+  // Define a custom property that is consumed by the Scene.
+  // This might be something as simple as an int, or something
+  // more complex, like a mocked network service.
+  int count = 0;
+
+  @override
+  Widget build() {
+    return EnvironmentAwareApp(
+      home: Scaffold(
+        body: Center(
+          child: Text(count.toString()),
+        ),
+      ),
+    );
+ }
+
+  @override
+  String get title => 'Counter';
+
+  @override
+  List<EnvironmentControlBuilder> get environmentControlBuilders => [
+        (BuildContext context, VoidCallback rebuildScene) {
+          // StepperControl is a widget provided by Stager for convenience.
+          // However, your EnvironmentControlBuilder can return any arbitrary widget.
+          return StepperControl(
+            title: const Text('Count'),
+            value: count.toString(),
+            onDecrementPressed: () {
+              count -= 1;
+
+              // Call rebuildScene to update the Scene with count's new value
+              rebuildScene();
+            },
+            onIncrementPressed: () {
+              count += 1;
+
+              // Call rebuildScene to update the Scene with count's new value
+              rebuildScene();
+            },
+          );
+        }
+      ];
+}
+```
+
+More complex examples can be found in `WithPostsScene` in `example/lib/pages/posts_list/posts_list_page_scenes.dart` and `PostDetailPageScene` in `example/lib/pages/post_detail/post_detail_page_scenes.dart`.
 
 ## Testing
 
