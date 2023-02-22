@@ -1,6 +1,6 @@
 name: stager
 description: A Flutter productivity tool that allows developers to isolate pieces of UI.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/bryanoltman/stager
 issue_tracker: https://github.com/bryanoltman/stager/issues
 
@@ -9,13 +9,13 @@ environment:
   flutter: ">=1.16.0"
 
 dependencies:
-  analyzer: ^5.0.0
-  build: ^2.3.0
+  analyzer: ">=5.1.0 <5.6.0"
+  build: ^2.3.1
   flutter:
     sdk: flutter
-  source_gen: ^1.2.2
+  source_gen: ^1.2.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  lints: ^2.0.0
+  lints: ^2.0.1
