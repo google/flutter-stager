@@ -10,6 +10,9 @@ class EnvironmentControlPanel extends StatefulWidget {
     this.targetPlatform,
   });
 
+  /// Standard width used for individual control title labels.
+  static const double labelWidth = 80;
+
   /// Widgets displayed in the panel.
   final List<Widget> children;
 
@@ -30,11 +33,9 @@ class _EnvironmentControlPanelState extends State<EnvironmentControlPanel> {
         topRight: Radius.circular(4),
         bottomRight: Radius.circular(4),
       ),
-      shadowColor: Colors.black,
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

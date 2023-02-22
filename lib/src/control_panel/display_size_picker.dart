@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../extensions/string_extensions.dart';
+import 'environment_control_panel.dart';
 
 /// Allows the user to input custom screen dimensions or to select from a list
 /// of popular device presets.
@@ -72,7 +73,10 @@ class _DisplaySizePickerState extends State<DisplaySizePicker> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        const Text('Screen Size'),
+        const SizedBox(
+          width: EnvironmentControlPanel.labelWidth,
+          child: Text('Screen Size'),
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
