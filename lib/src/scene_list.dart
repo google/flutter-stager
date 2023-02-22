@@ -19,12 +19,6 @@ class SceneList extends StatefulWidget {
 class _SceneListState extends State<SceneList> {
   @override
   Widget build(BuildContext context) {
-    if (widget.scenes.length == 1) {
-      return SceneContainer(
-        child: widget.scenes.first.build(),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Scenes')),
       body: ListView.separated(
@@ -40,9 +34,7 @@ class _SceneListState extends State<SceneList> {
 
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => SceneContainer(
-                    child: scene.build(),
-                  ),
+                  builder: (_) => SceneContainer(scene: scene),
                 ),
               );
             },

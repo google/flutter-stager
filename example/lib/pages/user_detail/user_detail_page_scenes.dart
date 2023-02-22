@@ -104,7 +104,7 @@ class ComplexUserDetailPageScene extends UserDetailPageScene {
   @override
   Future<void> setUp() async {
     await super.setUp();
-    user = User(
+    user = const User(
       id: 1234,
       handle: '@asdf',
       name: 'Super cool poster with great hot takes',

@@ -1,5 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+/// Signature for a function that creates a widget and provides a hook to
+/// trigger a rebuild of the current [Scene].
+typedef EnvironmentControlBuilder = Widget Function(
+  BuildContext context,
+  VoidCallback rebuildScene,
+);
+
 /// The central class of Stager, used to demonstrate a single piece of UI.
 ///
 /// Use [setUp] to configure dependencies and [build] to create the Widget you
@@ -71,4 +78,58 @@ abstract class Scene {
   ///
   /// This is called on every rebuild, including by Hot Reload.
   Widget build();
+
+  /// Used to add custom controls to the [EnvironmentControlPanel].
+  ///
+  /// Stager provides several widgets that should address most use cases,
+  /// including the [StepperControl], [DropdownControl], and [BooleanControl].
+  /// However, the Widgets returned by the [EnvironmentControlBuilder]s in this
+  /// list can return any arbitrary widget.
+  ///
+  /// The example below demonstrates usage of the [StepperControl] to increment
+  /// and decrement a value that is reflected on screen.
+  ///
+  /// ```
+  /// class CounterScene extends Scene {
+  ///   int count = 0;
+  ///
+  ///  @override
+  ///  Widget build() {
+  ///    return EnvironmentAwareApp(
+  ///      home: Scaffold(
+  ///        body: Center(
+  ///          child: Text(count.toString()),
+  ///        ),
+  ///      ),
+  ///    );
+  ///  }
+  ///
+  ///   @override
+  ///   String get title => 'Counter';
+  ///
+  ///   @override
+  ///   List<EnvironmentControlBuilder> get environmentControlBuilders => [
+  ///         (_, VoidCallback rebuildScene) {
+  ///           return StepperControl(
+  ///             title: const Text('Count'),
+  ///             value: count,
+  ///             onDecrementPressed: () {
+  ///               count -= 1;
+  ///               rebuildScene();
+  ///             },
+  ///             onIncrementPressed: () {
+  ///               count += 1;
+  ///               rebuildScene();
+  ///             },
+  ///           );
+  ///         }
+  ///       ];
+  /// }
+  /// ```
+  ///
+  /// To make effective use of this functionality, these widgets should
+  /// mutate a property defined on this Scene in the various onChange callbacks
+  /// **and call [rebuildScene()] afterwards.**
+  List<EnvironmentControlBuilder> environmentControlBuilders =
+      <EnvironmentControlBuilder>[];
 }

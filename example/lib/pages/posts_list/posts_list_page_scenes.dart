@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
@@ -52,13 +53,36 @@ class EmptyListScene extends BasePostsListScene {
 
 /// A Scene showing the [PostsListPage] with [Post]s.
 class WithPostsScene extends BasePostsListScene {
+  int _numPosts = Post.fakePosts().length;
+
   @override
   String get title => 'With Posts';
 
   @override
+  List<EnvironmentControlBuilder> get environmentControlBuilders =>
+      <EnvironmentControlBuilder>[
+        (_, VoidCallback rebuildScene) {
+          return StepperControl(
+            title: const Text('# Posts'),
+            value: _numPosts.toString(),
+            onDecrementPressed: () async {
+              _numPosts = max(0, _numPosts - 1);
+              rebuildScene();
+            },
+            onIncrementPressed: () async {
+              _numPosts = min(_numPosts + 1, Post.fakePosts().length);
+              rebuildScene();
+            },
+          );
+        },
+      ];
+
+  @override
   Future<void> setUp() async {
     await super.setUp();
-    when(mockApi.fetchPosts()).thenAnswer((_) async => Post.fakePosts());
+    when(mockApi.fetchPosts()).thenAnswer((_) async {
+      return Post.fakePosts().take(_numPosts).toList();
+    });
   }
 }
 
