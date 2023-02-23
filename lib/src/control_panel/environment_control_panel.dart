@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// A row of controls used to toggle [Theme] and [MediaQuery] parameters, like
-/// [MediaQuery.brightness] and [MediaQuery.textScale].
+/// Contains a set of controls used to change environment parameters (text
+/// scale, viewport size, dark/light mode, etc.) along with any widgets provided
+/// by the current Scene's [environmentControlBuilders].
 class EnvironmentControlPanel extends StatefulWidget {
   /// Creates an [EnvironmentControlPanel].
   const EnvironmentControlPanel({
