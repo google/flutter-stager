@@ -4,6 +4,12 @@ import 'package:stager/src/control_panel/environment_control_panel.dart';
 import 'package:stager/stager.dart';
 
 void main() {
+  // Test dimensions are 800x600
+  // The EnvironmentControlPanel is 300px wide, and there is a 1px divider to
+  // its right.
+  // 800 - 300 - 1 = 499
+  const double defaultSceneContainerWidth = 499;
+
   MediaQuery sceneContainerMediaQuery() {
     return find
         .byKey(const ValueKey<String>('SceneContainerMediaQuery'))
@@ -16,10 +22,6 @@ void main() {
     final StagerApp stagerApp =
         StagerApp(scenes: <Scene>[EnvironmentControlScene()]);
     await tester.pumpWidget(stagerApp);
-    await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const ValueKey<String>('ToggleEnvironmentControlPanelButton')),
-    );
     await tester.pumpAndSettle();
   }
 
@@ -164,7 +166,7 @@ void main() {
       await createAppAndShowControlPanel(tester);
 
       expect(findSceneFrame().height, 600);
-      expect(findSceneFrame().width, 800);
+      expect(findSceneFrame().width, defaultSceneContainerWidth);
 
       await tester.enterText(
         find.byKey(const ValueKey<String>('DisplayWidthTextField')),
@@ -190,7 +192,7 @@ void main() {
       await createAppAndShowControlPanel(tester);
 
       expect(findSceneFrame().height, 600);
-      expect(findSceneFrame().width, 800);
+      expect(findSceneFrame().width, defaultSceneContainerWidth);
 
       await tester.tap(find.text('Current Window'));
       await tester.pumpAndSettle();
