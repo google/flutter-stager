@@ -78,6 +78,12 @@ class WithPostsScene extends BasePostsListScene {
       ];
 
   @override
+  void onEnvironmentReset() {
+    super.onEnvironmentReset();
+    _numPosts = Post.fakePosts().length;
+  }
+
+  @override
   Future<void> setUp() async {
     await super.setUp();
     when(mockApi.fetchPosts()).thenAnswer((_) async {

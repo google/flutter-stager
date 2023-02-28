@@ -36,6 +36,12 @@ class PostDetailPageScene extends Scene {
       ];
 
   @override
+  void onEnvironmentReset() {
+    super.onEnvironmentReset();
+    currentPost = Post.fakePosts().first;
+  }
+
+  @override
   Widget build() {
     return EnvironmentAwareApp(
       home: PostDetailPage(
