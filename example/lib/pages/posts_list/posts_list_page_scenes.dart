@@ -23,7 +23,7 @@ abstract class BasePostsListScene extends Scene {
   late MockApi mockApi;
 
   @override
-  Widget build() {
+  Widget build(BuildContext context) {
     return EnvironmentAwareApp(
       home: Provider<Api>.value(
         value: mockApi,
@@ -53,41 +53,38 @@ class EmptyListScene extends BasePostsListScene {
 
 /// A Scene showing the [PostsListPage] with [Post]s.
 class WithPostsScene extends BasePostsListScene {
-  int _numPosts = Post.fakePosts().length;
+  /// Allows the number of posts shown in this Scene to be set in the control
+  /// panel.
+  ///
+  /// Because [PostListsPage] issues a request to fetch posts in [initState],
+  /// we need to call [setNeedsReconstruct] in the onValueUpdated callback to
+  /// tell Stager to fully recreate this Scene.
+  late final StepperControl<int> postCountStepperControl = StepperControl<int>(
+    title: 'Post Count',
+    stateKey: 'WithPostsScene.PostCount',
+    defaultValue: Post.fakePosts().length,
+    onDecrementPressed: (int currentValue) => max(0, currentValue - 1),
+    onIncrementPressed: (int currentValue) =>
+        min(currentValue + 1, Post.fakePosts().length),
+    onValueUpdated: (_) => setNeedsReconstruct(),
+  );
 
   @override
   String get title => 'With Posts';
 
   @override
-  List<EnvironmentControlBuilder> get environmentControlBuilders =>
-      <EnvironmentControlBuilder>[
-        (_, VoidCallback rebuildScene) {
-          return StepperControl(
-            title: const Text('# Posts'),
-            value: _numPosts.toString(),
-            onDecrementPressed: () async {
-              _numPosts = max(0, _numPosts - 1);
-              rebuildScene();
-            },
-            onIncrementPressed: () async {
-              _numPosts = min(_numPosts + 1, Post.fakePosts().length);
-              rebuildScene();
-            },
-          );
-        },
-      ];
-
-  @override
-  void onEnvironmentReset() {
-    super.onEnvironmentReset();
-    _numPosts = Post.fakePosts().length;
-  }
+  late final List<EnvironmentControl<Object?>> environmentControls =
+      <EnvironmentControl<Object?>>[
+    postCountStepperControl,
+  ];
 
   @override
   Future<void> setUp() async {
     await super.setUp();
     when(mockApi.fetchPosts()).thenAnswer((_) async {
-      return Post.fakePosts().take(_numPosts).toList();
+      return Post.fakePosts()
+          .take(postCountStepperControl.currentValue)
+          .toList();
     });
   }
 }

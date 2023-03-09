@@ -6,46 +6,34 @@ import 'post_detail_page.dart';
 
 /// A scene demonstrating a [PostDetailPage] with content.
 class PostDetailPageScene extends Scene {
-  /// The post being previewed.
-  Post currentPost = Post.fakePosts().first;
+  /// The [EnvironmentState] key that maps to the currentPost value.
+  static const String _currentPostKey = 'PostDetailPageScene.CurrentPost';
+
+  /// Creates an [EnvironmentControl] that allows the user to choose which
+  /// [Post] is displayed in this Scene.
+  final DropdownControl<Post> postSelectorControl = DropdownControl<Post>(
+    title: 'Post',
+    stateKey: _currentPostKey,
+    defaultValue: Post.fakePosts().first,
+    items: Post.fakePosts(),
+  );
 
   @override
   String get title => 'Post Detail';
 
-  /// This [Scene] overrides the otional [environmentControlBuilders] getter to
-  /// add a custom control to the Stager environment control panel.
+  /// This [Scene] overrides the otional [environmentControls] getter to add a
+  /// custom control to the Stager environment control panel.
   @override
-  List<EnvironmentControlBuilder> get environmentControlBuilders =>
-      <EnvironmentControlBuilder>[
-        (_, VoidCallback rebuildScene) {
-          return DropdownControl<Post>(
-              value: currentPost,
-              title: const Text('Post'),
-              items: Post.fakePosts(),
-              onChanged: (Post? newPost) {
-                if (newPost == null) {
-                  return;
-                }
-
-                // When a new [Post] is chosen, call [rebuildScene()] to update
-                // the UI with the newly chosen post.
-                currentPost = newPost;
-                rebuildScene();
-              });
-        },
-      ];
+  late final List<EnvironmentControl<Object?>> environmentControls =
+      <EnvironmentControl<Object?>>[
+    postSelectorControl,
+  ];
 
   @override
-  void onEnvironmentReset() {
-    super.onEnvironmentReset();
-    currentPost = Post.fakePosts().first;
-  }
-
-  @override
-  Widget build() {
+  Widget build(BuildContext context) {
     return EnvironmentAwareApp(
       home: PostDetailPage(
-        post: currentPost,
+        post: postSelectorControl.currentValue,
       ),
     );
   }

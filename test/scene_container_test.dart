@@ -39,7 +39,7 @@ class TextScene extends Scene {
   String get title => 'Text';
 
   @override
-  Widget build() {
+  Widget build(BuildContext context) {
     return const Text('Text Scene');
   }
 }

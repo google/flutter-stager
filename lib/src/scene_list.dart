@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'environment/state/environment_state.dart';
 import 'scene.dart';
 import 'scene_container.dart';
 
@@ -7,16 +8,25 @@ import 'scene_container.dart';
 /// the Scene before displaying it.
 class SceneList extends StatefulWidget {
   /// Creates a [SceneList] widget.
-  const SceneList({super.key, required this.scenes});
+  const SceneList({
+    super.key,
+    required this.scenes,
+    required this.environmentState,
+  });
 
   /// The list of [Scene]s displayed by this widget.
   final List<Scene> scenes;
+
+  /// The shared state backing [scenes].
+  final EnvironmentState environmentState;
 
   @override
   State<SceneList> createState() => _SceneListState();
 }
 
 class _SceneListState extends State<SceneList> {
+  EnvironmentState get environmentState => widget.environmentState;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +44,10 @@ class _SceneListState extends State<SceneList> {
 
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => SceneContainer(scene: scene),
+                  builder: (_) => SceneContainer(
+                    scene: scene,
+                    environmentState: environmentState,
+                  ),
                 ),
               );
             },

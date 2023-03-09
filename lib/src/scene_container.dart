@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'control_panel/boolean_control.dart';
-import 'control_panel/display_size_picker.dart';
-import 'control_panel/dropdown_control.dart';
-import 'control_panel/environment_control_panel.dart';
-import 'control_panel/stepper_control.dart';
+import 'environment/controls/boolean_control.dart';
+import 'environment/controls/dropdown_control.dart';
+import 'environment/controls/environment_control.dart';
+import 'environment/controls/stepper_control.dart';
+import 'environment/controls/text_input_control.dart';
+import 'environment/environment_control_panel.dart';
+import 'environment/state/environment_state.dart';
+import 'environment/state/screen_size_preset.dart';
 import 'scene.dart';
 
 /// Wraps [child] in a MediaQuery whose properties (such as textScale and
@@ -17,85 +21,198 @@ class SceneContainer extends StatefulWidget {
   /// Creates a [SceneContainer].
   const SceneContainer({
     super.key,
+    required this.environmentState,
     required this.scene,
   });
 
   /// The [Scene] being displayed.
   final Scene scene;
 
+  /// The shared state backing [scene].
+  final EnvironmentState environmentState;
+
   @override
   State<SceneContainer> createState() => _SceneContainerState();
 }
 
 class _SceneContainerState extends State<SceneContainer> {
-  static const Duration _panelAnimationDuration = Duration(milliseconds: 250);
-  static const double _panelDividerWidth = 1;
+  /// The length of the [EnvironmentControlPanel] show/hide animation.
+  static const Duration panelAnimationDuration = Duration(milliseconds: 250);
 
-  Key _containerKey = UniqueKey();
-  bool _isControlPanelExpanded = false;
-  double _textScale = 1;
-  bool _isDarkMode = false;
-  bool _isTextBold = false;
-  bool _showSemantics = false;
-  TargetPlatform? _targetPlatform;
-  num? _heightOverride;
-  num? _widthOverride;
+  /// The width of the divider between the [EnvironmentControlPanel] and the
+  /// body of the Scene.
+  static const double panelDividerWidth = 1;
 
-  void _rebuildScene() {
-    // Create a new UniqueKey to force recreation of StatefulWidgets' states.
-    setState(() => _containerKey = UniqueKey());
+  /// A key used to identify the Scene's parent widget. This is set to a new
+  /// [UniqueKey] value when [Scene.setNeedsReconstruct] is called to force
+  /// StatefulWidgets in the Scene to recreate their state.
+  Key containerKey = UniqueKey();
+
+  /// Whether or not the [EnvironmentControlPanel] is expanded. Only applicable
+  /// on small screens.
+  bool isControlPanelExpanded = false;
+
+  /// Used to listen to [Scene.setNeedsReconstruct].
+  late StreamSubscription<void> sceneReconstructSubscription;
+
+  /// The backing environment state for this Scene.
+  EnvironmentState get environmentState => widget.environmentState;
+
+  /// The width of the [EnvironmentControlPanel].
+  double get panelWidth => min(MediaQuery.of(context).size.width * 0.75, 300);
+
+  /// Whether the screen is too small to accommodate a master-detail layout for
+  /// the [EnvironmentControlPanel] and the Scene.
+  bool get isControlPanelCollapsible => MediaQuery.of(context).size.width < 600;
+
+  /// The largest possible vertical dimension for the Scene.
+  double get maxSceneHeight => MediaQuery.of(context).size.height;
+
+  /// The largest possible horizontal dimension for the Scene.
+  double get maxSceneWidth => isControlPanelCollapsible
+      ? MediaQuery.of(context).size.width
+      : MediaQuery.of(context).size.width - panelWidth - panelDividerWidth;
+
+  /// Effective height for the Scene.
+  double get sceneHeight {
+    final String? heightOverride = heightOverrideControl.currentValue;
+    if (heightOverride != null && double.tryParse(heightOverride) != null) {
+      return double.parse(heightOverride);
+    } else {
+      return maxSceneHeight;
+    }
   }
 
-  void _resetScene() {
-    setState(() {
-      _textScale = 1;
-      _isDarkMode = false;
-      _isTextBold = false;
-      _showSemantics = false;
-      _targetPlatform = null;
-      _heightOverride = null;
-      _widthOverride = null;
-      widget.scene.onEnvironmentReset();
-      _rebuildScene();
+  /// Effective width for the Scene.
+  double get sceneWidth {
+    final String? widthOverride = widthOverrideControl.currentValue;
+    if (widthOverride != null && double.tryParse(widthOverride) != null) {
+      return double.parse(widthOverride);
+    } else {
+      return maxSceneWidth;
+    }
+  }
+
+  late final BooleanControl darkModeControl = BooleanControl(
+    title: 'Dark Mode',
+    stateKey: EnvironmentState.isDarkModeKey,
+    defaultValue: false,
+    environmentState: environmentState,
+  );
+
+  late final StepperControl<double> textScaleControl = StepperControl<double>(
+    title: 'Text Scale',
+    stateKey: EnvironmentState.textScaleKey,
+    defaultValue: 1.0,
+    onDecrementPressed: (double currentValue) => currentValue -= 0.1,
+    onIncrementPressed: (double currentValue) => currentValue += 0.1,
+    displayValueBuilder: (double currentValue) =>
+        currentValue.toStringAsFixed(1),
+    environmentState: environmentState,
+  );
+
+  late final BooleanControl isTextBoldControl = BooleanControl(
+    title: 'Bold Text',
+    stateKey: EnvironmentState.isTextBoldKey,
+    defaultValue: false,
+    environmentState: environmentState,
+  );
+
+  late final BooleanControl showSemanticsControl = BooleanControl(
+    title: 'Show Semantics',
+    stateKey: EnvironmentState.showSemanticsKey,
+    defaultValue: false,
+    environmentState: environmentState,
+  );
+
+  late final DropdownControl<TargetPlatform?> targetPlatformControl =
+      DropdownControl<TargetPlatform?>(
+    title: 'Platform',
+    stateKey: EnvironmentState.targetPlatformKey,
+    defaultValue: null,
+    items: TargetPlatform.values,
+    itemTitleBuilder: (TargetPlatform? platform) =>
+        platform?.name ?? '(Current)',
+    environmentState: environmentState,
+  );
+
+  late final TextInputControl heightOverrideControl = TextInputControl(
+    title: 'Height',
+    stateKey: EnvironmentState.heightOverrideKey,
+    defaultValue: null,
+    environmentState: environmentState,
+  );
+
+  late final TextInputControl widthOverrideControl = TextInputControl(
+    title: 'Width',
+    stateKey: EnvironmentState.widthOverrideKey,
+    defaultValue: null,
+    environmentState: environmentState,
+  );
+
+  late final DropdownControl<ScreenSizePreset?> devicePickerControl =
+      DropdownControl<ScreenSizePreset?>(
+    title: 'Device',
+    stateKey: EnvironmentState.devicePreviewKey,
+    defaultValue: null,
+    items: <ScreenSizePreset?>[null, ...ScreenSizePreset.all],
+    itemTitleBuilder: (ScreenSizePreset? preset) =>
+        preset?.toString() ?? '(none)',
+    onValueUpdated: (ScreenSizePreset? preset) {
+      final Size newSize = preset?.size ?? Size(maxSceneWidth, maxSceneHeight);
+      heightOverrideControl.updateValue(newSize.height.toStringAsFixed(0));
+      widthOverrideControl.updateValue(newSize.width.toStringAsFixed(0));
+    },
+  );
+
+  @override
+  void initState() {
+    super.initState();
+
+    environmentState.addListener(rebuildScene);
+
+    sceneReconstructSubscription = widget.scene.onNeedsReconstruct.listen((_) {
+      // Create a new UniqueKey to force recreation of StatefulWidgets' states.
+      setState(() => containerKey = UniqueKey());
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      targetPlatformControl.updateValue(Theme.of(context).platform);
+      heightOverrideControl.updateValue(sceneHeight.toStringAsFixed(0));
+      widthOverrideControl.updateValue(sceneWidth.toStringAsFixed(0));
     });
   }
 
-  double get _panelWidth => min(MediaQuery.of(context).size.width * 0.75, 300);
-  bool get isSmallScreen => MediaQuery.of(context).size.width < 600;
+  @override
+  void dispose() {
+    sceneReconstructSubscription.cancel();
 
-  Size get _defaultSceneSize {
-    final Size viewportSize = MediaQuery.of(context).size;
-    return isSmallScreen
-        ? viewportSize
-        : Size(
-            viewportSize.width - _panelWidth - _panelDividerWidth,
-            viewportSize.height,
-          );
+    if (context.mounted) {
+      environmentState.removeListener(rebuildScene);
+    }
+    super.dispose();
   }
 
-  double get _sceneHeight {
-    return _heightOverride?.toDouble() ?? MediaQuery.of(context).size.height;
+  void rebuildScene() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {});
   }
 
-  double get _sceneWidth {
-    if (_widthOverride != null) {
-      return _widthOverride!.toDouble();
-    }
-
-    final double screenWidth = MediaQuery.of(context).size.width;
-
-    if (isSmallScreen) {
-      return screenWidth;
-    }
-
-    return screenWidth - _panelWidth - _panelDividerWidth;
+  void resetScene() {
+    setState(() {
+      environmentState.reset();
+      rebuildScene();
+    });
   }
 
   Widget _panel() {
     return SizedBox(
-      width: _panelWidth,
+      width: panelWidth,
       child: EnvironmentControlPanel(
-        targetPlatform: _targetPlatform,
+        targetPlatform: targetPlatformControl.currentValue,
         children: <Widget>[
           if (Navigator.of(context).canPop())
             IconButton(
@@ -103,86 +220,22 @@ class _SceneContainerState extends State<SceneContainer> {
               onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
               icon: const Icon(Icons.arrow_back),
             ),
-          BooleanControl(
-            key: const ValueKey<String>(
-              'ToggleDarkModeControl',
-            ),
-            title: const Text('Dark Mode'),
-            isOn: _isDarkMode,
-            onChanged: (bool newValue) {
-              setState(() {
-                _isDarkMode = newValue;
-              });
-            },
-          ),
-          BooleanControl(
-            key: const ValueKey<String>(
-              'ToggleBoldTextControl',
-            ),
-            title: const Text('Bold Text'),
-            isOn: _isTextBold,
-            onChanged: (bool newValue) {
-              setState(() {
-                _isTextBold = newValue;
-              });
-            },
-          ),
-          BooleanControl(
-            key: const ValueKey<String>(
-              'ToggleSemanticsOverlayControl',
-            ),
-            title: const Text('Semantics'),
-            isOn: _showSemantics,
-            onChanged: (bool newValue) {
-              setState(() {
-                _showSemantics = newValue;
-              });
-            },
-          ),
-          StepperControl(
-            key: const ValueKey<String>(
-              'TextScaleStepperControl',
-            ),
-            title: const Text('Text Scale'),
-            value: _textScale.toStringAsFixed(1),
-            onDecrementPressed: () => setState(() {
-              _textScale -= 0.1;
-            }),
-            onIncrementPressed: () => setState(() {
-              _textScale += 0.1;
-            }),
-          ),
-          DisplaySizePicker(
-            defaultSize: _defaultSceneSize,
-            didChangeSize: (num? width, num? height) {
-              setState(() {
-                _widthOverride = width;
-                _heightOverride = height;
-              });
-            },
-          ),
-          DropdownControl<TargetPlatform>(
-            title: const SizedBox(
-              width: EnvironmentControlPanel.labelWidth,
-              child: Text('Target Platform'),
-            ),
-            items: TargetPlatform.values,
-            onChanged: (TargetPlatform? newValue) => setState(() {
-              if (newValue != null) {
-                _targetPlatform = newValue;
-              }
-            }),
-            value: _targetPlatform ?? Theme.of(context).platform,
-            itemTitleBuilder: (TargetPlatform platform) => platform.name,
-          ),
-          ...widget.scene.environmentControlBuilders
-              .map((EnvironmentControlBuilder builder) {
-            return builder(context, _rebuildScene);
+          darkModeControl.build(context),
+          isTextBoldControl.build(context),
+          showSemanticsControl.build(context),
+          textScaleControl.build(context),
+          targetPlatformControl.build(context),
+          heightOverrideControl.build(context),
+          widthOverrideControl.build(context),
+          devicePickerControl.build(context),
+          ...widget.scene.environmentControls
+              .map((EnvironmentControl<Object?> control) {
+            return control.build(context);
           }),
           const SizedBox(height: 10),
           Center(
             child: ElevatedButton(
-              onPressed: _resetScene,
+              onPressed: resetScene,
               child: const Text('Reset'),
             ),
           ),
@@ -195,20 +248,23 @@ class _SceneContainerState extends State<SceneContainer> {
     return MediaQuery(
       key: const ValueKey<String>('SceneContainerMediaQuery'),
       data: MediaQuery.of(context).copyWith(
-        boldText: _isTextBold,
-        textScaleFactor: _textScale,
-        platformBrightness: _isDarkMode ? Brightness.dark : Brightness.light,
+        boldText: isTextBoldControl.currentValue,
+        textScaleFactor: textScaleControl.currentValue,
+        platformBrightness:
+            (darkModeControl.currentValue) ? Brightness.dark : Brightness.light,
       ),
       child: Theme(
-        data: Theme.of(context).copyWith(platform: _targetPlatform),
+        data: Theme.of(context).copyWith(
+          platform: targetPlatformControl.currentValue,
+        ),
         child: SizedBox(
-          key: _containerKey,
-          width: _sceneWidth,
-          height: _sceneHeight,
+          key: containerKey,
+          width: sceneWidth,
+          height: sceneHeight,
           child: ClipRect(
-            child: _showSemantics
-                ? SemanticsDebugger(child: widget.scene.build())
-                : widget.scene.build(),
+            child: (showSemanticsControl.currentValue)
+                ? SemanticsDebugger(child: widget.scene.build(context))
+                : widget.scene.build(context),
           ),
         ),
       ),
@@ -226,11 +282,11 @@ class _SceneContainerState extends State<SceneContainer> {
           padding: EdgeInsets.zero,
           alignment: Alignment.centerLeft,
           transform: Matrix4.translationValues(
-            _isControlPanelExpanded ? 0 : -_panelWidth,
+            isControlPanelExpanded ? 0 : -panelWidth,
             0,
             0,
           ),
-          duration: _panelAnimationDuration,
+          duration: panelAnimationDuration,
           curve: Curves.easeOutCubic,
           child: SafeArea(
             child: Row(
@@ -245,12 +301,12 @@ class _SceneContainerState extends State<SceneContainer> {
                   padding: const EdgeInsets.all(10),
                   onPressed: () {
                     setState(() {
-                      _isControlPanelExpanded = !_isControlPanelExpanded;
+                      isControlPanelExpanded = !isControlPanelExpanded;
                     });
                   },
                   child: AnimatedRotation(
-                    duration: _panelAnimationDuration,
-                    turns: _isControlPanelExpanded ? 0.5 : 0.0,
+                    duration: panelAnimationDuration,
+                    turns: isControlPanelExpanded ? 0.5 : 0.0,
                     child: const Icon(Icons.arrow_forward),
                   ),
                 ),
@@ -271,7 +327,7 @@ class _SceneContainerState extends State<SceneContainer> {
         SafeArea(
           child: _panel(),
         ),
-        const VerticalDivider(width: _panelDividerWidth),
+        const VerticalDivider(width: panelDividerWidth),
         const Spacer(),
         Center(
           child: _sceneWrapper(),
@@ -285,7 +341,9 @@ class _SceneContainerState extends State<SceneContainer> {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.black,
-      child: isSmallScreen ? _smallScreenLayout() : _largeScreenLayout(),
+      child: isControlPanelCollapsible
+          ? _smallScreenLayout()
+          : _largeScreenLayout(),
     );
   }
 }

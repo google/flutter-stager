@@ -11,7 +11,7 @@ class PostCardScene extends Scene {
   String get title => 'Single Card';
 
   @override
-  Widget build() {
+  Widget build(BuildContext context) {
     return PostCard(
       post: Post.fakePosts().first,
       onTap: () {},
@@ -48,18 +48,16 @@ class PostsListScene extends Scene {
   String get title => 'Card List';
 
   @override
-  Widget build() {
+  Widget build(BuildContext context) {
     return EnvironmentAwareApp(
-      home: Builder(
-        builder: (BuildContext context) => Container(
-          color: Theme.of(context).colorScheme.background,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (BuildContext context, int index) => PostCard(
-              post: posts[index],
-              onTap: () {},
-            ),
+      home: Container(
+        color: Theme.of(context).colorScheme.background,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (BuildContext context, int index) => PostCard(
+            post: posts[index],
+            onTap: () {},
           ),
         ),
       ),

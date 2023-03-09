@@ -61,21 +61,15 @@ You can also override the following methods and properties:
 
 A function that is called once before the Scene is displayed. This will generally be where you configure your widget's dependencies.
 
-#### `environmentControlBuilders`
+#### `environmentControls`
 
-An optional list of `EnvironmentControlBuilder`s that allow you to add custom widgets to the Stager control panel. `EnvironmentControlBuilder` is a function similar to a `WidgetBuilder` – it accepts a `BuildContext` as a parameter and returns a `Widget`. It also accepts an additional `rebuildScene` callback that you can use to tell Stager to reconstruct your Scene.
-
-Stager calls these functions when constructing a Scene and places the widgets they return in the environment control panel.
+An optional list of `EnvironmentControl`s that allow you to add custom widgets to the Stager control panel. An `EnvironmentControl` provides a widget that allows the user to change values used when presenting a Scene. State is preserved when the same controls are used in multiple scenes. Stager includes several of these controls that allow the user to toggle dark mode, change text scale, etc.
 
 These are useful if you want to manipulate things specific to your app, including:
 
 - Data displayed by your widget
 - Properties on mocked dependenices
 - Feature flags
-
-Widgets placed in the environment control panel typically have callbacks that update an environment value or values (a parameter to a widget in your Scene or the behavior of a dependency) and then call `rebuildScene`, which reconstructs the Scene to reflect the changes.
-
-You can return any arbitrary widget from these functions.
 
 ### StagerApp
 
@@ -259,54 +253,42 @@ flutter run -t path/to/my_scenes.stager_app.g.dart --dart-define='Scene=No Posts
 
 ### Adding your own environment controls
 
-Stager's control panel comes with a generally useful set of controls that enable you to toggle dark mode, adjust text scale, etc. However, it is very likely that your app has unique environment properties that would be useful to adjust at runtime. To support this, Scenes have an overridable `environmentControlBuilders` property which allows you to add custom widgets to the default set of environment manipulation controls.
+Stager's control panel comes with a generally useful set of controls that enable you to toggle dark mode, adjust text scale, etc. However, it is very likely that your app has unique environment properties that would be useful to adjust at runtime. To support this, Scenes have an overridable `environmentControls` property which allows you to add custom widgets to the default set of environment manipulation controls.
 
 A very simple example:
 
 ```dart
 class CounterScene extends Scene {
-  // Define a custom property that is consumed by the Scene.
-  // This might be something as simple as an int, or something
-  // more complex, like a mocked network service.
-  int count = 0;
+  // A [StepperControl] allows the user to increment and decrement a value using "-" and
+  // "+" buttons. [EnvironmentControl]s will trigger a Scene rebuild when they update
+  // their values.
+  final StepperControl<int> stepperControl = StepperControl<int>(
+    title: 'My Control',
+    stateKey: 'MyControl.Key',
+    defaultValue: 0,
+    onDecrementPressed: (int currentValue) => currentValue + 1,
+    onIncrementPressed: (int currentValue) => currentValue - 1,
+  );
+
+  @override
+  String get title => 'Counter';
+
+  @override
+  final List<EnvironmentControl<Object?>> environmentControls =
+      <EnvironmentControl<Object?>>[
+        stepperControl,
+  ];
 
   @override
   Widget build() {
     return EnvironmentAwareApp(
       home: Scaffold(
         body: Center(
-          child: Text(count.toString()),
+          child: Text(stepperControl.currentValue.toString()),
         ),
       ),
     );
  }
-
-  @override
-  String get title => 'Counter';
-
-  @override
-  List<EnvironmentControlBuilder> get environmentControlBuilders => [
-        (BuildContext context, VoidCallback rebuildScene) {
-          // StepperControl is a widget provided by Stager for convenience.
-          // However, your EnvironmentControlBuilder can return any arbitrary widget.
-          return StepperControl(
-            title: const Text('Count'),
-            value: count.toString(),
-            onDecrementPressed: () {
-              count -= 1;
-
-              // Call rebuildScene to update the Scene with count's new value
-              rebuildScene();
-            },
-            onIncrementPressed: () {
-              count += 1;
-
-              // Call rebuildScene to update the Scene with count's new value
-              rebuildScene();
-            },
-          );
-        }
-      ];
 }
 ```
 
