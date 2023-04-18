@@ -180,6 +180,15 @@ class _SceneContainerState extends State<SceneContainer> {
       widthOverrideControl.updateValue(newSize.width.toStringAsFixed(0));
     },
   );
+  late final DropdownControl<Locale> localePickerControl =
+      DropdownControl<Locale>(
+    title: 'Locale',
+    stateKey: EnvironmentState.localeKey,
+    defaultValue: Localizations.localeOf(context),
+    items: _getLocales(context),
+    itemTitleBuilder: (Locale? locale) => locale.toString(),
+    environmentState: environmentState,
+  );
 
   @override
   void initState() {
@@ -196,6 +205,7 @@ class _SceneContainerState extends State<SceneContainer> {
       targetPlatformControl.updateValue(Theme.of(context).platform);
       heightOverrideControl.updateValue(sceneHeight.toStringAsFixed(0));
       widthOverrideControl.updateValue(sceneWidth.toStringAsFixed(0));
+      localePickerControl.updateValue(Localizations.localeOf(context));
     });
   }
 
@@ -244,6 +254,7 @@ class _SceneContainerState extends State<SceneContainer> {
           heightOverrideControl.build(context),
           widthOverrideControl.build(context),
           devicePickerControl.build(context),
+          localePickerControl.build(context),
           ...widget.scene.environmentControls
               .map((EnvironmentControl<Object?> control) {
             return control.build(context);
@@ -278,10 +289,13 @@ class _SceneContainerState extends State<SceneContainer> {
           width: sceneWidth,
           height: sceneHeight,
           child: ClipRect(
+              child: Localizations.override(
+            context: context,
+            locale: localePickerControl.currentValue,
             child: (showSemanticsControl.currentValue)
                 ? SemanticsDebugger(child: widget.scene.build(context))
                 : widget.scene.build(context),
-          ),
+          )),
         ),
       ),
     );
@@ -351,6 +365,19 @@ class _SceneContainerState extends State<SceneContainer> {
         const Spacer(),
       ],
     );
+  }
+
+  /// A function to compute  the list of locales showed in the dropdown
+  List<Locale> _getLocales(BuildContext context) {
+    final List<Locale> locales = <Locale>[];
+    if (widget.scene.supportedLocales != null) {
+      locales.addAll(widget.scene.supportedLocales!);
+      final Locale currentLocale = Localizations.localeOf(context);
+      if (!locales.contains(currentLocale)) {
+        locales.add(currentLocale);
+      }
+    }
+    return locales;
   }
 
   @override

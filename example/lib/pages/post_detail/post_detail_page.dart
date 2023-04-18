@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../shared/post.dart';
 import '../user_detail/user_detail_page.dart';
@@ -31,7 +32,7 @@ class PostDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post'),
+        title: Text(AppLocalizations.of(context).post),
         actions: <PopupMenuButton<int>>[
           PopupMenuButton<int>(
             onSelected: (_) {

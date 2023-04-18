@@ -26,11 +26,11 @@ import 'package:flutter/material.dart';
 /// manipulation feature to work properly.
 class EnvironmentAwareApp extends StatelessWidget {
   /// Creates an [EnvironmentAwareApp] with the provided [home].
-  const EnvironmentAwareApp({
-    super.key,
-    required this.home,
-    this.localizationsDelegates,
-  });
+  const EnvironmentAwareApp(
+      {super.key,
+      required this.home,
+      this.localizationsDelegates,
+      this.supportedLocales});
 
   /// The widget wrapped by this app.
   final Widget home;
@@ -39,8 +39,23 @@ class EnvironmentAwareApp extends StatelessWidget {
   /// [MaterialApp].
   final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
 
+  /// Optional list of [Locale]s, forwarded to the wrapped [MaterialApp]
+  final Iterable<Locale>? supportedLocales;
+
   @override
   Widget build(BuildContext context) {
+    if (supportedLocales != null && supportedLocales!.isNotEmpty) {
+      return MaterialApp(
+        useInheritedMediaQuery: true,
+        theme: ThemeData.light().copyWith(platform: Theme.of(context).platform),
+        darkTheme:
+            ThemeData.dark().copyWith(platform: Theme.of(context).platform),
+        home: home,
+        localizationsDelegates: localizationsDelegates,
+        supportedLocales: supportedLocales!,
+        locale: Localizations.localeOf(context),
+      );
+    }
     return MaterialApp(
       useInheritedMediaQuery: true,
       theme: ThemeData.light().copyWith(platform: Theme.of(context).platform),
@@ -48,6 +63,7 @@ class EnvironmentAwareApp extends StatelessWidget {
           ThemeData.dark().copyWith(platform: Theme.of(context).platform),
       home: home,
       localizationsDelegates: localizationsDelegates,
+      locale: Localizations.localeOf(context),
     );
   }
 }

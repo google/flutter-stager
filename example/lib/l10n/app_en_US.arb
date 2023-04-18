@@ -1,0 +1,7 @@
+{
+    "@@locale": "en_US",
+    "post": "Post",
+    "@post": {
+        "description": "Something posted by a user of the app"
+    }
+}
