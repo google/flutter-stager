@@ -15,6 +15,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:stager/stager.dart';
 
 import '../../shared/post.dart';
@@ -37,6 +39,9 @@ class PostDetailPageScene extends Scene {
   @override
   String get title => 'Post Detail';
 
+  @override
+  List<Locale>? get supportedLocales => AppLocalizations.supportedLocales;
+
   /// This [Scene] overrides the otional [environmentControls] getter to add a
   /// custom control to the Stager environment control panel.
   @override
@@ -48,6 +53,12 @@ class PostDetailPageScene extends Scene {
   @override
   Widget build(BuildContext context) {
     return EnvironmentAwareApp(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
       home: PostDetailPage(
         post: postSelectorControl.currentValue,
       ),

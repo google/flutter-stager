@@ -65,6 +65,11 @@ class EnvironmentState extends ChangeNotifier {
   /// If null, the current window/screen size will be used.
   static const String devicePreviewKey = 'EnvironmentState.devicePreviewKey';
 
+  /// The local used for the scene
+  ///
+  ///If null, the default locale will be used
+  static const String localeKey = 'EnvironmentState.localeKey';
+
   /// Stores current named environment state values.
   Map<String, dynamic> _stateMap = <String, dynamic>{};
 

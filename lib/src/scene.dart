@@ -82,6 +82,11 @@ abstract class Scene {
   /// of scenes.
   String get title;
 
+  ///  This is the list of locales supported by the scene
+  ///
+  ///If the list is not provided, the default locale will be used
+  List<Locale>? supportedLocales;
+
   /// Used to configure this Scene's dependencies.
   ///
   /// Analogous to StatefulWidget's `initState`, this is called once at app
